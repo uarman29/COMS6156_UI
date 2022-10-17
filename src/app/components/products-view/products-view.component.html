@@ -1,4 +1,21 @@
-<div class="mat-elevation-z8">
+<form [formGroup] = "productForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill">
+        <mat-label>Name: </mat-label>
+        <input matInput formControlName="name">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Category: </mat-label>
+        <input matInput formControlName="category">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Price: </mat-label>
+        <input matInput formControlName="price">
+    </mat-form-field>
+    <button type="submit" [disabled]="!productForm.valid">Submit</button>
+</form>
+<div class="mat-elevation-z8" *ngIf = "products.length > 0">
     <table mat-table [dataSource]="dataSource">
         <ng-container matColumnDef="product_id">
         <th mat-header-cell *matHeaderCellDef> Id </th>
@@ -24,7 +41,10 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
-    <mat-paginator  [pageSizeOptions]="[5, 10, 20]"
+    <mat-paginator  #paginator 
+                    [length]="products.length" 
+                    [pageSize] = "5" 
+                    [pageSizeOptions]="[5, 10, 20]"
                     showFirstLastButtons 
                     aria-label="Select page of products">
     </mat-paginator>

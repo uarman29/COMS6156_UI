@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { BackendServiceService, Product } from 'src/app/services/backend-service.service';
-import {MatTableDataSource} from '@angular/material/table';
-import {MatPaginator} from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-products-view',
@@ -14,7 +15,13 @@ export class ProductsViewComponent implements OnInit, AfterViewInit {
   displayedColumns:string[] = ["product_id", "name", "category", "price"];
   dataSource!:MatTableDataSource<Product>;
 
-  constructor(private backendService:BackendServiceService) { 
+  productForm = this.fb.group({
+    name: [''],
+    category: [''],
+    price: ['']
+  });
+
+  constructor(private backendService:BackendServiceService, private fb:FormBuilder) { 
   }
 
   ngOnInit(): void {
@@ -26,6 +33,10 @@ export class ProductsViewComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
+  }
+
+  onSubmit() {
+    
   }
 
 }
