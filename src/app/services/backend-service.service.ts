@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 export interface Product {
 	product_id: number,
@@ -58,6 +58,15 @@ export class BackendServiceService {
 	constructor(private http: HttpClient) { }
 
 	getProducts(): Observable<Product[]> {
+		let products:Product[] = [
+			{product_id: 1, name: "Shirt", category: "Clothing", price: 20}, 
+			{product_id: 2, name: "TV", category: "Electronics", price: 200},
+			{product_id: 3, name: "Sofa", category: "Furniture", price: 1000},
+			{product_id: 4, name: "Computer", category: "Electronics", price: 1200},
+			{product_id: 5, name: "Bodywash", category: "Health", price: 9},
+			{product_id: 6, name: "Pants", category: "Clothing", price: 30}
+		]
+		return of(products);
 		return this.http.get<Product[]>(this.product_microservice_url + "/products");
 	}
 
