@@ -10,12 +10,14 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { ProductViewComponent } from './components/product-view/product-view.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ProductsViewComponent,
-    NavbarComponent
+    NavbarComponent,
+    ProductViewComponent
   ],
   imports: [
     BrowserModule,

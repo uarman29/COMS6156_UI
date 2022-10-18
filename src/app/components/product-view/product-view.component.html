@@ -1,0 +1,22 @@
+<form [formGroup] = "productForm">
+    <div class="row product-form-group mb-3">
+        <div class="col-md-4 product-form-control">
+            <label for="name" class="form-label">Product Name</label>
+            <input type="text" class="form-control" formControlName = "name" required>
+        </div>
+
+        <div class="col-md-4 product-form-control">
+            <label for="category" class="form-label">Category</label>
+            <input type="text" class="form-control" formControlName = "category" required>
+        </div>
+
+        <div class="col-md-3 product-form-control">
+            <label for="price" class="form-label">Price</label>
+            <input type="number" class="form-control" formControlName = "price" required>
+        </div>
+    </div>
+    <div>
+        <button class="btn btn-secondary" [disabled]="!productForm.valid" (click)="onUpdateSubmit()">Update</button>
+        <button class="btn btn-danger" (click)="onDelete()">Delete</button>
+    </div>
+</form>

@@ -70,12 +70,30 @@ export class BackendServiceService {
 		return this.http.get<Product[]>(this.product_microservice_url + "/products");
 	}
 
-	getProduct(product_id: number): Observable<Product> {
+	getProduct(product_id: number): Observable<Product|undefined> {
+		let products:Product[] = [
+			{product_id: 1, name: "Shirt", category: "Clothing", price: 20}, 
+			{product_id: 2, name: "TV", category: "Electronics", price: 200},
+			{product_id: 3, name: "Sofa", category: "Furniture", price: 1000},
+			{product_id: 4, name: "Computer", category: "Electronics", price: 1200},
+			{product_id: 5, name: "Bodywash", category: "Health", price: 9},
+			{product_id: 6, name: "Pants", category: "Clothing", price: 30}
+		]
+		let product = products.find(product => product.product_id === product_id);
+		return of(product);
 		return this.http.get<Product>(this.product_microservice_url + `/products/${product_id}`);
 	}
 
 	addProduct(product: Product): Observable<Product> {
 		return this.http.post<Product>(this.product_microservice_url + "/products", product);
+	}
+
+	updateProduct(product: Product): Observable<Product> {
+		return this.http.put<Product>(this.product_microservice_url + "/products", product);
+	}
+
+	deleteProduct(product_id: number): Observable<Product> {
+		return this.http.delete<Product>(this.product_microservice_url + `/products/${product_id}`);
 	}
 
 	getUsers(): Observable<User[]> {

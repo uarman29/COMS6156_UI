@@ -21,6 +21,18 @@ export class ProductsViewComponent implements OnInit, AfterViewInit {
     price: [0]
   });
 
+  get name() {
+    return this.productForm.get('name') as FormControl;
+  }
+
+  get category() {
+    return this.productForm.get('category') as FormControl;
+  }
+
+  get price() {
+    return this.productForm.get('price') as FormControl;
+  }
+
   constructor(private backendService:BackendServiceService, private fb:FormBuilder) { 
   }
 
@@ -33,18 +45,6 @@ export class ProductsViewComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
-  }
-
-  get name() {
-    return this.productForm.get('name') as FormControl;
-  }
-
-  get category() {
-    return this.productForm.get('category') as FormControl;
-  }
-
-  get price() {
-    return this.productForm.get('price') as FormControl;
   }
 
   onSubmit() {
