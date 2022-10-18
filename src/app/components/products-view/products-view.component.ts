@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { BackendServiceService, Product } from 'src/app/services/backend-service.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-products-view',
@@ -18,7 +18,7 @@ export class ProductsViewComponent implements OnInit, AfterViewInit {
   productForm = this.fb.group({
     name: [''],
     category: [''],
-    price: ['']
+    price: [0]
   });
 
   constructor(private backendService:BackendServiceService, private fb:FormBuilder) { 
@@ -35,8 +35,24 @@ export class ProductsViewComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
+  get name() {
+    return this.productForm.get('name') as FormControl;
+  }
+
+  get category() {
+    return this.productForm.get('category') as FormControl;
+  }
+
+  get price() {
+    return this.productForm.get('price') as FormControl;
+  }
+
   onSubmit() {
-    
+    if(!this.productForm.valid){
+      return;
+    }
+    let p:Product = {product_id: Math.max(...this.products.map(product => product.product_id), 0) + 1, name: this.name.value, category: this.category.value, price: this.price.value}
+    this.backendService.addProduct(p);
   }
 
 }

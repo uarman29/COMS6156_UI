@@ -8,14 +8,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { ProductsViewComponent } from './components/products-view/products-view.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ProductsViewComponent
+    ProductsViewComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
@@ -24,10 +24,8 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
     MatTableModule,
     MatPaginatorModule,
     NoopAnimationsModule,
-    MatFormFieldModule,
     FormsModule,
-    ReactiveFormsModule,
-    MatInputModule
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
