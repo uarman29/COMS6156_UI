@@ -1,0 +1,66 @@
+<form [formGroup] = "cardForm" (ngSubmit)="onSubmit()">
+    <div class="row card-form-group mb-3">
+        <div class="col-md-2 card-form-control">
+            <label for="user_id" class="form-label">User Id</label>
+            <input type="number" class="form-control" formControlName = "user_id" required>
+        </div>
+
+        <div class="col-md-4 card-form-control">
+            <label for="card_no" class="form-label">Card No</label>
+            <input type="text" class="form-control" formControlName = "card_no" required>
+        </div>
+
+        <div class="col-md-2 card-form-control">
+            <label for="expiration_date" class="form-label">Expiration Date</label>
+            <input type="text" class="form-control" formControlName = "expiration_date" required>
+        </div>
+
+        <div class="col-md-2 card-form-control">
+            <label for="cvv" class="form-label">CVV</label>
+            <input type="text" class="form-control" formControlName = "cvv" required>
+        </div>
+
+        <div class="col-md-2 card-form-control">
+            <button type="submit" class="btn btn-primary" [disabled]="!cardForm.valid">Add</button>
+        </div>
+    </div>
+</form>
+<div class="mat-elevation-z8" *ngIf = "cards.length > 0">
+    <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="card_id">
+        <th mat-header-cell *matHeaderCellDef> Card Id </th>
+        <td mat-cell *matCellDef="let card"> <a routerLink="/cards/{{card.card_id}}">{{card.card_id}}</a></td>
+        </ng-container>
+    
+        <ng-container matColumnDef="user_id">
+        <th mat-header-cell *matHeaderCellDef> User Id </th>
+        <td mat-cell *matCellDef="let card"><a routerLink="/users/{{card.user_id}}">{{card.user_id}}</a> </td>
+        </ng-container>
+    
+        <ng-container matColumnDef="card_no">
+        <th mat-header-cell *matHeaderCellDef> Card No. </th>
+        <td mat-cell *matCellDef="let card"> {{card.card_no}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="expiration_date">
+            <th mat-header-cell *matHeaderCellDef> Expiration Date </th>
+            <td mat-cell *matCellDef="let card"> {{card.expiration_date}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="cvv">
+            <th mat-header-cell *matHeaderCellDef> CVV </th>
+            <td mat-cell *matCellDef="let card"> {{card.cvv}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator  #paginator 
+                    [length]="cards.length" 
+                    [pageSize] = "5" 
+                    [pageSizeOptions]="[5, 10, 20]"
+                    showFirstLastButtons 
+                    aria-label="Select page of cards">
+    </mat-paginator>
+</div>
