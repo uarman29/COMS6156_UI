@@ -11,13 +11,17 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { ProductViewComponent } from './components/product-view/product-view.component';
+import { UsersViewComponent } from './components/users-view/users-view.component';
+import { UserViewComponent } from './components/user-view/user-view.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ProductsViewComponent,
     NavbarComponent,
-    ProductViewComponent
+    ProductViewComponent,
+    UsersViewComponent,
+    UserViewComponent
   ],
   imports: [
     BrowserModule,

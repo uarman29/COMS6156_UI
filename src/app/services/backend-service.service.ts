@@ -97,15 +97,38 @@ export class BackendServiceService {
 	}
 
 	getUsers(): Observable<User[]> {
+		let users:User[] = [
+			{user_id: 1, first_name: "James", last_name: "Cameron"}, 
+			{user_id: 2, first_name: "Willy", last_name: "Mack"},
+			{user_id: 3, first_name: "Polly", last_name: "Windsor"},
+			{user_id: 4, first_name: "Maggie", last_name: "Moon"}
+		]
+		return of(users);
 		return this.http.get<User[]>(this.user_microservice_url + "/users");
 	}
 
-	getUser(user_id: number): Observable<User> {
+	getUser(user_id: number): Observable<User|undefined> {
+		let users:User[] = [
+			{user_id: 1, first_name: "James", last_name: "Cameron"}, 
+			{user_id: 2, first_name: "Willy", last_name: "Mack"},
+			{user_id: 3, first_name: "Polly", last_name: "Windsor"},
+			{user_id: 4, first_name: "Maggie", last_name: "Moon"}
+		]
+		let user = users.find(user => user.user_id === user_id);
+		return of(user);
 		return this.http.get<User>(this.user_microservice_url + `/users/${user_id}`);
 	}
 
 	addUser(user: User): Observable<User> {
 		return this.http.post<User>(this.user_microservice_url + "/users", user);
+	}
+
+	updateUser(user: User): Observable<User> {
+		return this.http.put<User>(this.user_microservice_url + "/users", user);
+	}
+
+	deleteUser(user_id: number): Observable<User> {
+		return this.http.delete<User>(this.user_microservice_url + `/users/${user_id}`);
 	}
 
 	getCards(): Observable<Card[]> {

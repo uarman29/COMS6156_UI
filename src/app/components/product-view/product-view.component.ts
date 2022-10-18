@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BackendServiceService, Product } from 'src/app/services/backend-service.service';
 
 @Component({
@@ -31,13 +31,13 @@ export class ProductViewComponent implements OnInit {
     return this.productForm.get('price') as FormControl;
   }
 
-  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private route: ActivatedRoute) { }
+  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     this.id = Number(this.route.snapshot.paramMap.get('id'));
     this.backendService.getProduct(this.id).subscribe(product =>{
       if(product === undefined)
-        this.product = {product_id:-1, name:'', category:'', price:0};
+        this.router.navigate(['/products']);
       else
         this.product = product;
       this.name.setValue(this.product.name);
@@ -56,6 +56,7 @@ export class ProductViewComponent implements OnInit {
 
   onDelete() {
     this.backendService.deleteProduct(this.product.product_id);
+    this.router.navigate(['/products']);
   }
 
 }
