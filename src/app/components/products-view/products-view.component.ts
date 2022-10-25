@@ -3,6 +3,7 @@ import { BackendServiceService, Product } from 'src/app/services/backend-service
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { FormBuilder, FormControl } from '@angular/forms';
+import { interval } from 'rxjs';
 
 @Component({
   selector: 'app-products-view',
@@ -40,11 +41,12 @@ export class ProductsViewComponent implements OnInit, AfterViewInit {
     this.backendService.getProducts().subscribe(products =>{
       this.products = products;
       this.dataSource = new MatTableDataSource<Product>(this.products);
+      this.dataSource.paginator = this.paginator;
     });
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
+    
   }
 
   onSubmit() {
@@ -52,7 +54,7 @@ export class ProductsViewComponent implements OnInit, AfterViewInit {
       return;
     }
     let p:Product = {product_id: Math.max(...this.products.map(product => product.product_id), 0) + 1, name: this.name.value, category: this.category.value, price: this.price.value}
-    this.backendService.addProduct(p);
+    this.backendService.addProduct(p).subscribe();
   }
 
 }

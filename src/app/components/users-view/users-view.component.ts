@@ -36,11 +36,11 @@ export class UsersViewComponent implements OnInit {
     this.backendService.getUsers().subscribe(users =>{
       this.users = users;
       this.dataSource = new MatTableDataSource<User>(this.users);
+      this.dataSource.paginator = this.paginator;
     });
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
   }
 
   onSubmit() {
@@ -48,7 +48,7 @@ export class UsersViewComponent implements OnInit {
       return;
     }
     let u:User = {user_id: Math.max(...this.users.map(user => user.user_id), 0) + 1, first_name: this.first_name.value, last_name: this.last_name.value};
-    this.backendService.addUser(u);
+    this.backendService.addUser(u).subscribe();
   }
 
 }

@@ -51,11 +51,12 @@ export class ProductViewComponent implements OnInit {
       return;
     }
     let p:Product = {product_id: this.product.product_id, name: this.name.value, category: this.category.value, price: this.price.value};
-    this.backendService.updateProduct(p);
+    this.backendService.updateProduct(p).subscribe();
+    this.router.navigate(['/products']);
   }
 
   onDelete() {
-    this.backendService.deleteProduct(this.product.product_id);
+    this.backendService.deleteProduct(this.product.product_id).subscribe();
     this.router.navigate(['/products']);
   }
 

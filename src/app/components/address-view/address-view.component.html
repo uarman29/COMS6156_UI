@@ -50,7 +50,7 @@
   </div>
 </form>
 
-<div>
+<div *ngIf="address">
     <h3>Links</h3>
     <ul>
         <li><a routerLink="/users/{{address.user_id}}">/users/{{address.user_id}}</a></li>

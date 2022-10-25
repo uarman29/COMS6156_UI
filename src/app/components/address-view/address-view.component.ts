@@ -63,11 +63,12 @@ export class AddressViewComponent implements OnInit {
       return;
     }
     let a:Address = {address_id: this.address.address_id, user_id: this.user_id.value, street_address: this.street_address.value, state: this.state.value, city: this.city.value, zip_code: this.zip_code.value};
-    this.backendService.updateAddress(a);
+    this.backendService.updateAddress(a).subscribe();
+    this.router.navigate(['/addresses']);
   }
 
   onDelete() {
-    this.backendService.deleteAddress(this.address.address_id);
+    this.backendService.deleteAddress(this.address.address_id).subscribe();
     this.router.navigate(['/addresses']);
   }
 

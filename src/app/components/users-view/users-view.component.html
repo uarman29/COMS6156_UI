@@ -2,12 +2,12 @@
     <div class="row user-form-group mb-3">
         <div class="col-md-5 user-form-control">
             <label for="name" class="form-label">First Name</label>
-            <input type="text" class="form-control" formControlName = "first_name" required>
+            <input type="text" class="form-control" formControlName = "first_name" name="first_name" required>
         </div>
 
         <div class="col-md-5 user-form-control">
             <label for="category" class="form-label">Last Name</label>
-            <input type="text" class="form-control" formControlName = "last_name" required>
+            <input type="text" class="form-control" formControlName = "last_name" name="last_name" required>
         </div>
 
         <div class="col-md-2 user-form-control">
@@ -15,7 +15,7 @@
         </div>
     </div>
 </form>
-<div class="mat-elevation-z8" *ngIf = "users.length > 0">
+<div class="mat-elevation-z8">
     <table mat-table [dataSource]="dataSource">
         <ng-container matColumnDef="user_id">
         <th mat-header-cell *matHeaderCellDef> Id </th>

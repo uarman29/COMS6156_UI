@@ -2,24 +2,24 @@
     <div class="row product-form-group mb-3">
         <div class="col-md-4 product-form-control">
             <label for="name" class="form-label">Product Name</label>
-            <input type="text" class="form-control" formControlName = "name" required>
+            <input type="text" class="form-control" formControlName = "name" name="name" required>
         </div>
 
         <div class="col-md-4 product-form-control">
             <label for="category" class="form-label">Category</label>
-            <input type="text" class="form-control" formControlName = "category" required>
+            <input type="text" class="form-control" formControlName = "category" name="category" required>
         </div>
 
         <div class="col-md-3 product-form-control">
             <label for="price" class="form-label">Price</label>
-            <input type="number" class="form-control" formControlName = "price" required>
+            <input type="number" class="form-control" formControlName = "price" name="price" required>
         </div>
         <div class="col-md-1 product-form-control">
             <button type="submit" class="btn btn-primary" [disabled]="!productForm.valid">Add</button>
         </div>
     </div>
 </form>
-<div class="mat-elevation-z8" *ngIf = "products.length > 0">
+<div class="mat-elevation-z8">
     <table mat-table [dataSource]="dataSource">
         <ng-container matColumnDef="product_id">
         <th mat-header-cell *matHeaderCellDef> Id </th>

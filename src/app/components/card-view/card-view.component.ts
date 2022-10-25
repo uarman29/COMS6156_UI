@@ -57,11 +57,12 @@ export class CardViewComponent implements OnInit {
       return;
     }
     let c:Card = {card_id: this.card.card_id, user_id: this.user_id.value, card_no: this.card_no.value, expiration_date: this.expiration_date.value, cvv: this.cvv.value};
-    this.backendService.updateCard(c);
+    this.backendService.updateCard(c).subscribe();
+    this.router.navigate(['/cards']);
   }
 
   onDelete() {
-    this.backendService.deleteCard(this.card.card_id);
+    this.backendService.deleteCard(this.card.card_id).subscribe();
     this.router.navigate(['/cards']);
   }
 

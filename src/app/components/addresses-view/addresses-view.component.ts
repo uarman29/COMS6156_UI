@@ -51,11 +51,11 @@ export class AddressesViewComponent implements OnInit {
     this.backendService.getAddresses().subscribe(addresses =>{
       this.addresses = addresses;
       this.dataSource = new MatTableDataSource<Address>(this.addresses);
+      this.dataSource.paginator = this.paginator;
     });
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
   }
 
   onSubmit() {
@@ -63,6 +63,6 @@ export class AddressesViewComponent implements OnInit {
       return;
     }
     let a:Address = {address_id: Math.max(...this.addresses.map(address => address.address_id), 0) + 1, user_id: this.user_id.value, street_address: this.street_address.value, state: this.state.value, city: this.city.value, zip_code: this.zip_code.value};
-    this.backendService.addAddress(a);
+    this.backendService.addAddress(a).subscribe();
   }
 }

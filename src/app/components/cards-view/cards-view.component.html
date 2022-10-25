@@ -2,22 +2,22 @@
     <div class="row card-form-group mb-3">
         <div class="col-md-2 card-form-control">
             <label for="user_id" class="form-label">User Id</label>
-            <input type="number" class="form-control" formControlName = "user_id" required>
+            <input type="number" class="form-control" formControlName = "user_id" name="user_id" required>
         </div>
 
         <div class="col-md-4 card-form-control">
             <label for="card_no" class="form-label">Card No</label>
-            <input type="text" class="form-control" formControlName = "card_no" required>
+            <input type="text" class="form-control" formControlName = "card_no" name="card_no" required>
         </div>
 
         <div class="col-md-2 card-form-control">
             <label for="expiration_date" class="form-label">Expiration Date</label>
-            <input type="text" class="form-control" formControlName = "expiration_date" required>
+            <input type="text" class="form-control" formControlName = "expiration_date" name="expiration_date" required>
         </div>
 
         <div class="col-md-2 card-form-control">
             <label for="cvv" class="form-label">CVV</label>
-            <input type="text" class="form-control" formControlName = "cvv" required>
+            <input type="text" class="form-control" formControlName = "cvv" name="cvv" required>
         </div>
 
         <div class="col-md-2 card-form-control">
@@ -25,7 +25,7 @@
         </div>
     </div>
 </form>
-<div class="mat-elevation-z8" *ngIf = "cards.length > 0">
+<div class="mat-elevation-z8">
     <table mat-table [dataSource]="dataSource">
         <ng-container matColumnDef="card_id">
         <th mat-header-cell *matHeaderCellDef> Card Id </th>

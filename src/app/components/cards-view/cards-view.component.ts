@@ -46,11 +46,11 @@ export class CardsViewComponent implements OnInit {
     this.backendService.getCards().subscribe(cards =>{
       this.cards = cards;
       this.dataSource = new MatTableDataSource<Card>(this.cards);
+      this.dataSource.paginator = this.paginator;
     });
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
   }
 
   onSubmit() {
@@ -58,7 +58,7 @@ export class CardsViewComponent implements OnInit {
       return;
     }
     let c:Card = {card_id: Math.max(...this.cards.map(card => card.card_id), 0) + 1, user_id: this.user_id.value, card_no: this.card_no.value, expiration_date: this.expiration_date.value, cvv: this.cvv.value};
-    this.backendService.addCard(c);
+    this.backendService.addCard(c).subscribe();
   }
 
 }
