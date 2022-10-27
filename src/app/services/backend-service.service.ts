@@ -54,7 +54,7 @@ export class BackendServiceService {
 
 	product_microservice_url = "http://127.0.0.1:5000"
 	user_microservice_url = "http://127.0.0.1:5000"
-	order_microservice_url = ""
+	order_microservice_url = "http://127.0.0.1:5000"
 
 	constructor(private http: HttpClient) { }
 
@@ -139,21 +139,10 @@ export class BackendServiceService {
 	}
 
 	getOrders(): Observable<Order[]> {
-		let orders:Order[] = [
-			{order_id: 1, user_id: 1, card_id: 1, address_id: 1, order_time: new Date(), total:100},
-			{order_id: 2, user_id: 3, card_id: 2, address_id: 2, order_time: new Date(), total:20},
-		]
-		return of(orders);
 		return this.http.get<Order[]>(this.order_microservice_url + "/orders");
 	}
 
 	getOrder(order_id: number): Observable<Order|undefined> {
-		let orders:Order[] = [
-			{order_id: 1, user_id: 1, card_id: 1, address_id: 1, order_time: new Date(), total:100},
-			{order_id: 2, user_id: 3, card_id: 2, address_id: 2, order_time: new Date(), total:20},
-		]
-		let order = orders.find(order => order.order_id === order_id);
-		return of(order);
 		return this.http.get<Order>(this.order_microservice_url + `/orders/${order_id}`);
 	}
 
@@ -162,7 +151,7 @@ export class BackendServiceService {
 	}
 
 	updateOrder(order: Order): Observable<Order> {
-		return this.http.put<Order>(this.order_microservice_url + "/orders", order);
+		return this.http.put<Order>(this.order_microservice_url + `/orders/${order.order_id}`, order);
 	}
 
 	deleteOrder(order_id: number): Observable<Order> {
@@ -170,14 +159,7 @@ export class BackendServiceService {
 	}
 
 	getOrderItems(order_id: number): Observable<OrderItem[]> {
-		let orderItems:OrderItem[] = [
-			{order_id: 1, product_id: 6, quantity: 2},
-			{order_id: 1, product_id: 1, quantity: 2},
-			{order_id: 2, product_id: 1, quantity: 1},
-		]
-		let filteredOrderItems:OrderItem[] = orderItems.filter(item => item.order_id === order_id);
-		return of(filteredOrderItems);
-		return this.http.get<OrderItem[]>(this.order_microservice_url + `/orders/${order_id}/products`);
+		return this.http.get<OrderItem[]>(this.order_microservice_url + `/orders/${order_id}/items`);
 	}
 
 	addOrderItem(order_item: OrderItem): Observable<OrderItem> {

@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
+import { interval, Subscription } from 'rxjs';
 import { BackendServiceService, User } from 'src/app/services/backend-service.service';
 
 @Component({
@@ -14,6 +16,7 @@ export class UsersViewComponent implements OnInit {
   users: User[] = [];
   displayedColumns:string[] = ["user_id", "first_name", "last_name"];
   dataSource!:MatTableDataSource<User>;
+  dataSubscription!: Subscription;
 
   userForm = this.fb.group({
     first_name: [''],
@@ -29,7 +32,7 @@ export class UsersViewComponent implements OnInit {
   }
 
 
-  constructor(private backendService:BackendServiceService, private fb:FormBuilder) { 
+  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private router:Router) { 
   }
 
   ngOnInit(): void {
@@ -38,6 +41,22 @@ export class UsersViewComponent implements OnInit {
       this.dataSource = new MatTableDataSource<User>(this.users);
       this.dataSource.paginator = this.paginator;
     });
+
+    this.dataSubscription = interval(500).subscribe(() => {
+      this.backendService.getUsers().subscribe(users =>{
+        this.users = users;
+        this.dataSource.data = this.users;
+      });
+    });
+
+    this.router.events.subscribe(() => {
+      this.dataSubscription.unsubscribe();
+    });
+  }
+
+  ngOnDestory(): void {
+    console.log("DESTROYED");
+    this.dataSubscription.unsubscribe();
   }
 
   ngAfterViewInit(): void {

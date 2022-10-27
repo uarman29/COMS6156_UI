@@ -2,27 +2,27 @@
     <div class="row order-form-group mb-3">
         <div class="col-md-2 order-form-control">
             <label for="user_id" class="form-label">User Id</label>
-            <input type="number" class="form-control" formControlName = "user_id" required>
+            <input type="number" class="form-control" formControlName = "user_id" name="user_id" required>
         </div>
 
         <div class="col-md-2 order-form-control">
             <label for="card_id" class="form-label">Card Id</label>
-            <input type="text" class="form-control" formControlName = "card_id" required>
+            <input type="text" class="form-control" formControlName = "card_id" name="card_id" required>
         </div>
 
         <div class="col-md-2 order-form-control">
             <label for="address_id" class="form-label">Address Id</label>
-            <input type="text" class="form-control" formControlName = "address_id" required>
+            <input type="text" class="form-control" formControlName = "address_id" name="address_id" required>
         </div>
 
         <div class="col-md-4 order-form-control">
             <label for="order_time" class="form-label">Order Time</label>
-            <input type="text" class="form-control" formControlName = "order_time" required>
+            <input type="text" class="form-control" formControlName = "order_time" name="order_time" required>
         </div>
 
         <div class="col-md-2 order-form-control">
             <label for="total" class="form-label">Total</label>
-            <input type="text" class="form-control" formControlName = "total" required>
+            <input type="text" class="form-control" formControlName = "total" name="total" required>
         </div>
     </div>
     <div class="row order-form-group mb-3">
@@ -31,7 +31,7 @@
         </div>
     </div>
 </form>
-<div class="mat-elevation-z8" *ngIf = "orders.length > 0">
+<div class="mat-elevation-z8">
     <table mat-table [dataSource]="dataSource">
         <ng-container matColumnDef="order_id">
         <th mat-header-cell *matHeaderCellDef> Order Id </th>

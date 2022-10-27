@@ -68,11 +68,12 @@ export class OrderViewComponent implements OnInit {
       return;
     }
     let o:Order = {order_id: this.order.order_id, user_id: this.user_id.value, card_id: this.card_id.value, address_id: this.address_id.value, order_time: this.order_time.value, total: this.total.value};
-    this.backendService.updateOrder(o);
+    this.backendService.updateOrder(o).subscribe();
+    this.router.navigate(['/orders']);
   }
 
   onDelete() {
-    this.backendService.deleteOrder(this.order.order_id);
+    this.backendService.deleteOrder(this.order.order_id).subscribe();
     this.router.navigate(['/orders']);
   }
 }
