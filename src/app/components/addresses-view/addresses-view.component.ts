@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Address, BackendServiceService } from 'src/app/services/backend-service.service';
 
 @Component({
@@ -44,21 +44,25 @@ export class AddressesViewComponent implements OnInit {
     return this.addressForm.get('zip_code') as FormControl;
   }
 
-  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private router:Router) { 
+  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private router:Router, private ar:ActivatedRoute) { 
   }
 
   updateData() {
-    this.backendService.getAddresses().subscribe(addresses =>{
-      this.addresses = addresses;
-      this.dataSource.data = this.addresses;
+    this.ar.queryParamMap.subscribe(params =>{
+      this.backendService.getAddresses(params).subscribe(addresses =>{
+        this.addresses = addresses;
+        this.dataSource.data = this.addresses;
+      });
     });
   }
 
   ngOnInit(): void {
-    this.backendService.getAddresses().subscribe(addresses =>{
-      this.addresses = addresses;
-      this.dataSource = new MatTableDataSource<Address>(this.addresses);
-      this.dataSource.paginator = this.paginator;
+    this.ar.queryParamMap.subscribe(params =>{
+      this.backendService.getAddresses(params).subscribe(addresses =>{
+        this.addresses = addresses;
+        this.dataSource = new MatTableDataSource<Address>(this.addresses);
+        this.dataSource.paginator = this.paginator;
+      });
     });
 
     this.router.events.subscribe(() => this.updateData());

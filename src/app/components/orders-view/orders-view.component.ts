@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BackendServiceService, Order } from 'src/app/services/backend-service.service';
 
 @Component({
@@ -45,21 +45,25 @@ export class OrdersViewComponent implements OnInit {
   }
 
 
-  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private router: Router) { 
+  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private router: Router, private ar:ActivatedRoute) { 
   }
 
   updateData() {
-    this.backendService.getOrders().subscribe(orders =>{
-      this.orders = orders;
-      this.dataSource.data = this.orders;
+    this.ar.queryParamMap.subscribe(params =>{
+      this.backendService.getOrders(params).subscribe(orders =>{
+        this.orders = orders;
+        this.dataSource.data = this.orders;
+      });
     });
   }
 
   ngOnInit(): void {
-    this.backendService.getOrders().subscribe(orders =>{
-      this.orders = orders;
-      this.dataSource = new MatTableDataSource<Order>(this.orders);
-      this.dataSource.paginator = this.paginator;
+    this.ar.queryParamMap.subscribe(params =>{
+      this.backendService.getOrders(params).subscribe(orders =>{
+        this.orders = orders;
+        this.dataSource = new MatTableDataSource<Order>(this.orders);
+        this.dataSource.paginator = this.paginator;
+      });
     });
 
     this.router.events.subscribe(() => this.updateData());

@@ -3,7 +3,7 @@ import { BackendServiceService, Product } from 'src/app/services/backend-service
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-products-view',
@@ -34,20 +34,25 @@ export class ProductsViewComponent implements OnInit {
     return this.productForm.get('price') as FormControl;
   }
 
-  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private router: Router) { 
+  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private router: Router, private ar:ActivatedRoute) { 
   }
 
   updateData() {
-    this.backendService.getProducts().subscribe(products =>{
-      this.products = products;
-      this.dataSource.data = this.products;
+    this.ar.queryParamMap.subscribe(params =>{
+      this.backendService.getProducts(params).subscribe(products =>{
+        this.products = products;
+        this.dataSource.data = this.products;
+      });
     });
   }
+  
   ngOnInit(): void {
-    this.backendService.getProducts().subscribe(products =>{
-      this.products = products;
-      this.dataSource = new MatTableDataSource<Product>(this.products);
-      this.dataSource.paginator = this.paginator;
+    this.ar.queryParamMap.subscribe(params =>{
+      this.backendService.getProducts(params).subscribe(products =>{
+        this.products = products;
+        this.dataSource = new MatTableDataSource<Product>(this.products);
+        this.dataSource.paginator = this.paginator;
+      });
     });
 
     this.router.events.subscribe(() => this.updateData());

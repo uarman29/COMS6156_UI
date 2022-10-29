@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { BackendServiceService, User } from 'src/app/services/backend-service.service';
 
 @Component({
@@ -31,22 +31,27 @@ export class UsersViewComponent implements OnInit {
   }
 
 
-  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private router:Router) { 
+  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private router:Router, private ar: ActivatedRoute) { 
   }
   
   updateData() {
-    this.backendService.getUsers().subscribe(users =>{
-      this.users = users;
-      this.dataSource.data = this.users;
-    });
+    this.ar.queryParamMap.subscribe(params =>{
+      this.backendService.getUsers(params).subscribe(users =>{
+        this.users = users;
+        this.dataSource.data = this.users;
+      });
+    })
   }
 
   ngOnInit(): void {
-    this.backendService.getUsers().subscribe(users =>{
-      this.users = users;
-      this.dataSource = new MatTableDataSource<User>(this.users);
-      this.dataSource.paginator = this.paginator;
+    this.ar.queryParamMap.subscribe(params =>{
+      this.backendService.getUsers(params).subscribe(users =>{
+        this.users = users;
+        this.dataSource = new MatTableDataSource<User>(this.users);
+        this.dataSource.paginator = this.paginator;
+      });
     });
+    
 
     this.router.events.subscribe(() => {
       this.updateData();

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BackendServiceService, Card } from 'src/app/services/backend-service.service';
 
 @Component({
@@ -40,21 +40,25 @@ export class CardsViewComponent implements OnInit {
   }
 
 
-  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private router:Router) { 
+  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private router:Router, private ar:ActivatedRoute) { 
   }
 
   updateData() {
-    this.backendService.getCards().subscribe(cards =>{
-      this.cards = cards;
-      this.dataSource.data = this.cards;
+    this.ar.queryParamMap.subscribe(params =>{
+      this.backendService.getCards(params).subscribe(cards =>{
+        this.cards = cards;
+        this.dataSource.data = this.cards;
+      });
     });
   }
 
   ngOnInit(): void {
-    this.backendService.getCards().subscribe(cards =>{
-      this.cards = cards;
-      this.dataSource = new MatTableDataSource<Card>(this.cards);
-      this.dataSource.paginator = this.paginator;
+    this.ar.queryParamMap.subscribe(params =>{
+      this.backendService.getCards(params).subscribe(cards =>{
+        this.cards = cards;
+        this.dataSource = new MatTableDataSource<Card>(this.cards);
+        this.dataSource.paginator = this.paginator;
+      });
     });
 
     this.router.events.subscribe(() => this.updateData());

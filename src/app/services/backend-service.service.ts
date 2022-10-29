@@ -64,12 +64,12 @@ export class BackendServiceService {
 
 	product_microservice_url = "http://127.0.0.1:5000"
 	user_microservice_url = "http://127.0.0.1:5001"
-	order_microservice_url = "http://127.0.0.1:5000"
+	order_microservice_url = "http://127.0.0.1:5002"
 
 	constructor(private http: HttpClient) { }
 
-	getProducts(): Observable<Product[]> {
-		return this.http.get<Product[]>(this.product_microservice_url + "/products");
+	getProducts(params:Object = {}): Observable<Product[]> {
+		return this.http.get<Product[]>(this.product_microservice_url + "/products", params=params);
 	}
 
 	getProduct(product_id: number): Observable<Product|undefined> {
@@ -88,8 +88,8 @@ export class BackendServiceService {
 		return this.http.delete<Product>(this.product_microservice_url + `/products/${product_id}`);
 	}
 
-	getUsers(): Observable<User[]> {
-		return this.http.get<User[]>(this.user_microservice_url + "/users");
+	getUsers(params:Object = {}): Observable<User[]> {
+		return this.http.get<User[]>(this.user_microservice_url + "/users", params=params);
 	}
 
 	getUser(user_id: number): Observable<User|undefined> {
@@ -108,8 +108,8 @@ export class BackendServiceService {
 		return this.http.delete<User>(this.user_microservice_url + `/users/${user_id}`);
 	}
 
-	getCards(): Observable<Card[]> {
-		return this.http.get<Card[]>(this.user_microservice_url + "/cards");
+	getCards(params:Object = {}): Observable<Card[]> {
+		return this.http.get<Card[]>(this.user_microservice_url + "/cards", params=params);
 	}
 
 	getCard(card_id: number): Observable<Card|undefined> {
@@ -128,8 +128,8 @@ export class BackendServiceService {
 		return this.http.delete<Card>(this.user_microservice_url + `/cards/${card_id}`);
 	}
 
-	getAddresses(): Observable<Address[]> {
-		return this.http.get<Address[]>(this.user_microservice_url + "/addresses");
+	getAddresses(params:Object = {}): Observable<Address[]> {
+		return this.http.get<Address[]>(this.user_microservice_url + "/addresses", params=params);
 	}
 
 	getAddress(address_id: number): Observable<Address|undefined> {
@@ -148,8 +148,8 @@ export class BackendServiceService {
 		return this.http.delete<Address>(this.user_microservice_url + `/addresses/${address_id}`);
 	}
 
-	getOrders(): Observable<Order[]> {
-		return this.http.get<Order[]>(this.order_microservice_url + "/orders");
+	getOrders(params:Object = {}): Observable<Order[]> {
+		return this.http.get<Order[]>(this.order_microservice_url + "/orders", params=params);
 	}
 
 	getOrder(order_id: number): Observable<Order|undefined> {
