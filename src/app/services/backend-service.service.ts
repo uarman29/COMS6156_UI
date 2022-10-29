@@ -2,17 +2,23 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
+export interface Link {
+	rel: string,
+	href: string
+}
 export interface Product {
 	product_id: number,
 	name: string,
 	category: string,
-	price: number
+	price: number,
+	links?: Link[]
 }
 
 export interface User {
 	user_id: number,
 	first_name: string,
-	last_name: string
+	last_name: string,
+	links?: Link[]
 }
 
 export interface Card {
@@ -20,7 +26,8 @@ export interface Card {
 	user_id: number,
 	card_no: string,
 	expiration_date: string,
-	cvv: string
+	cvv: string,
+	links?: Link[]
 }
 
 export interface Address {
@@ -29,7 +36,8 @@ export interface Address {
 	state: string,
 	city: string,
 	street_address: string,
-	zip_code: string
+	zip_code: string,
+	links?: Link[]
 }
 
 export interface Order {
@@ -38,13 +46,15 @@ export interface Order {
 	card_id: number,
 	address_id: number,
 	order_time: Date,
-	total: number
+	total: number,
+	links?: Link[]
 }
 
 export interface OrderItem {
 	order_id: number,
 	product_id: number,
-	quantity: number
+	quantity: number,
+	links?: Link[]
 }
 
 @Injectable({
@@ -53,7 +63,7 @@ export interface OrderItem {
 export class BackendServiceService {
 
 	product_microservice_url = "http://127.0.0.1:5000"
-	user_microservice_url = "http://127.0.0.1:5000"
+	user_microservice_url = "http://127.0.0.1:5001"
 	order_microservice_url = "http://127.0.0.1:5000"
 
 	constructor(private http: HttpClient) { }

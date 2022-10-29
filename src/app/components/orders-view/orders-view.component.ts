@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { BackendServiceService, Order } from 'src/app/services/backend-service.service';
 
 @Component({
@@ -44,7 +45,14 @@ export class OrdersViewComponent implements OnInit {
   }
 
 
-  constructor(private backendService:BackendServiceService, private fb:FormBuilder) { 
+  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private router: Router) { 
+  }
+
+  updateData() {
+    this.backendService.getOrders().subscribe(orders =>{
+      this.orders = orders;
+      this.dataSource.data = this.orders;
+    });
   }
 
   ngOnInit(): void {
@@ -53,9 +61,8 @@ export class OrdersViewComponent implements OnInit {
       this.dataSource = new MatTableDataSource<Order>(this.orders);
       this.dataSource.paginator = this.paginator;
     });
-  }
 
-  ngAfterViewInit(): void {
+    this.router.events.subscribe(() => this.updateData());
   }
 
   onSubmit() {
@@ -63,6 +70,6 @@ export class OrdersViewComponent implements OnInit {
       return;
     }
     let o:Order = {order_id: Math.max(...this.orders.map(order => order.order_id), 0) + 1, user_id: this.user_id.value, card_id: this.card_id.value, address_id: this.address_id.value, order_time: this.order_time.value, total: this.total.value};
-    this.backendService.addOrder(o).subscribe();
+    this.backendService.addOrder(o).subscribe(() => this.updateData());
   }
 }

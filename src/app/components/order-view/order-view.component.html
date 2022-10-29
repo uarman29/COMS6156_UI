@@ -59,8 +59,6 @@
 <div *ngIf="order">
     <h3>Links</h3>
     <ul>
-        <li><a routerLink="/users/{{order.user_id}}">/users/{{order.user_id}}</a></li>
-        <li><a routerLink="/cards/{{order.card_id}}">/cards/{{order.card_id}}</a></li>
-        <li><a routerLink="/addresses/{{order.address_id}}">/addresses/{{order.address_id}}</a></li>
+        <li *ngFor="let link of order.links"><a routerLink="{{link.href}}">{{link.href}}</a></li>
     </ul>
 </div>

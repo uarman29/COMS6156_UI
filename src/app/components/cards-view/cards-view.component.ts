@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { BackendServiceService, Card } from 'src/app/services/backend-service.service';
 
 @Component({
@@ -39,7 +40,14 @@ export class CardsViewComponent implements OnInit {
   }
 
 
-  constructor(private backendService:BackendServiceService, private fb:FormBuilder) { 
+  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private router:Router) { 
+  }
+
+  updateData() {
+    this.backendService.getCards().subscribe(cards =>{
+      this.cards = cards;
+      this.dataSource.data = this.cards;
+    });
   }
 
   ngOnInit(): void {
@@ -48,6 +56,8 @@ export class CardsViewComponent implements OnInit {
       this.dataSource = new MatTableDataSource<Card>(this.cards);
       this.dataSource.paginator = this.paginator;
     });
+
+    this.router.events.subscribe(() => this.updateData());
   }
 
   ngAfterViewInit(): void {
@@ -58,7 +68,7 @@ export class CardsViewComponent implements OnInit {
       return;
     }
     let c:Card = {card_id: Math.max(...this.cards.map(card => card.card_id), 0) + 1, user_id: this.user_id.value, card_no: this.card_no.value, expiration_date: this.expiration_date.value, cvv: this.cvv.value};
-    this.backendService.addCard(c).subscribe();
+    this.backendService.addCard(c).subscribe(() => this.updateData());
   }
 
 }
