@@ -51,9 +51,47 @@
 
 <div>
     <h3>Contents</h3>
-    <ul>
-        <li *ngFor="let orderItem of orderItems"><a routerLink="/products/{{orderItem.product_id}}">/products/{{orderItem.product_id}}</a> x {{orderItem.quantity}}</li>
-    </ul>
+    <form [formGroup] = "orderItemForm">
+      <div class="row order-form-group mb-3">
+        <div class="col-md-5 order-item-form-control">
+            <label for="product_id" class="form-label">Product Id</label>
+            <input type="number" class="form-control" formControlName = "product_id" required>
+        </div>
+        <div class="col-md-5 order-item-form-control">
+          <label for="quantity" class="form-label">Quantity</label>
+          <input type="number" class="form-control" formControlName = "quantity" required>
+        </div>
+
+        <div class="col-md-2 order-item-form-control text-center d-flex flex-column justify-content-end">
+          <button type="button" class="btn btn-primary" [disabled]="!orderItemForm.valid" (click)="addOrderItem()">Add Item</button>
+        </div>
+      </div>
+      
+      <ng-container formArrayName="current_items">
+        <ng-container *ngFor="let itemForm of current_items.controls; let i = index">
+          <div class="order-item-form-row" [formGroupName]="i">
+            <div class="row mb-3">
+              <div class="col-md-4">
+                  <label for="product_id" class="form-label">Product Id</label>
+                  <input type="number" class="form-control" formControlName = "product_id" required [attr.disabled]="true">
+              </div>
+              <div class="col-md-4">
+                <label for="quantity" class="form-label">Quantity</label>
+                <input type="number" class="form-control" formControlName = "quantity" required>
+              </div>
+      
+              <div class="col-md-2 text-center d-flex flex-column justify-content-end">
+                <button type="button" class="btn btn-secondary" [disabled]="!itemForm.valid" (click)="updateOrderItem(i)">Update</button>
+              </div>
+
+              <div class="col-md-2 text-center d-flex flex-column justify-content-end">
+                <button type="button" class="btn btn-warning" [disabled]="!itemForm.valid" (click)="deleteOrderItem(i)">Delete</button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </form>
 </div>
 
 <div *ngIf="order">

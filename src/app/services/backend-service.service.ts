@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 export interface Link {
 	rel: string,
@@ -62,9 +63,9 @@ export interface OrderItem {
 })
 export class BackendServiceService {
 
-	product_microservice_url = "http://127.0.0.1:5000"
-	user_microservice_url = "http://127.0.0.1:5001"
-	order_microservice_url = "http://127.0.0.1:5002"
+	product_microservice_url = environment.product_microservice_url
+	user_microservice_url = environment.user_microservice_url
+	order_microservice_url = environment.order_microservice_url
 
 	constructor(private http: HttpClient) { }
 
@@ -173,6 +174,14 @@ export class BackendServiceService {
 	}
 
 	addOrderItem(order_item: OrderItem): Observable<OrderItem> {
-		return this.http.post<OrderItem>(this.order_microservice_url + `/orders/${order_item.order_id}/products`, order_item);
+		return this.http.post<OrderItem>(this.order_microservice_url + `/orders/${order_item.order_id}/items`, order_item);
 	}	
+
+	updateOrderItem(order_item: OrderItem): Observable<Order> {
+		return this.http.put<Order>(this.order_microservice_url + `/orders/${order_item.order_id}/items/${order_item.product_id}`, order_item);
+	}
+
+	deleteOrderItem(order_item: OrderItem): Observable<Order> {
+		return this.http.delete<Order>(this.order_microservice_url + `/orders/${order_item.order_id}/items/${order_item.product_id}`);
+	}
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackendServiceService, Order, OrderItem } from 'src/app/services/backend-service.service';
 
@@ -22,6 +22,13 @@ export class OrderViewComponent implements OnInit {
     total: [0],
   });
 
+  orderItemForm = this.fb.group({
+    order_id: [0],
+    product_id: [0],
+    quantity: [0],
+    current_items: this.fb.array([])
+  });
+
   get user_id() {
     return this.orderForm.get('user_id') as FormControl;
   }
@@ -42,7 +49,33 @@ export class OrderViewComponent implements OnInit {
     return this.orderForm.get('total') as FormControl;
   }
 
+  get product_id() {
+    return this.orderItemForm.get('product_id') as FormControl;
+  }
+
+  get quantity() {
+    return this.orderItemForm.get('quantity') as FormControl;
+  }
+
+  get current_items() {
+    return this.orderItemForm.get('current_items') as FormArray;
+  }
+
   constructor(private backendService:BackendServiceService, private fb:FormBuilder, private route: ActivatedRoute, private router: Router) { }
+
+  loadOrderItems() {
+    this.backendService.getOrderItems(this.order.order_id).subscribe(orderItems =>{
+      this.current_items.clear();
+      this.orderItems = orderItems;
+      for(let item of orderItems) {
+        let itemForm = this.fb.group({
+          product_id: [item.product_id],
+          quantity: [item.quantity]
+        });
+        this.current_items.push(itemForm);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.id = Number(this.route.snapshot.paramMap.get('id'));
@@ -57,9 +90,7 @@ export class OrderViewComponent implements OnInit {
       this.order_time.setValue(this.order.order_time);
       this.total.setValue(this.order.total);
 
-      this.backendService.getOrderItems(this.order.order_id).subscribe(orderItems =>{
-        this.orderItems = orderItems;
-      });
+      this.loadOrderItems();
     });
   }
 
@@ -75,5 +106,20 @@ export class OrderViewComponent implements OnInit {
   onDelete() {
     this.backendService.deleteOrder(this.order.order_id).subscribe();
     this.router.navigate(['/orders']);
+  }
+
+  addOrderItem() {
+    let orderItem:OrderItem = {order_id: this.order.order_id, product_id: this.product_id.value, quantity: this.quantity.value};
+    this.backendService.addOrderItem(orderItem).subscribe(() => this.loadOrderItems());
+  }
+
+  updateOrderItem(i: number) {
+    let orderItem:OrderItem = {order_id: this.order.order_id, product_id: this.current_items.at(i).get('product_id')!.value, quantity: this.current_items.at(i).get('quantity')!.value};
+    this.backendService.updateOrderItem(orderItem).subscribe(() => this.loadOrderItems());
+  }
+
+  deleteOrderItem(i: number) {
+    let orderItem:OrderItem = {order_id: this.order.order_id, product_id: this.current_items.at(i).get('product_id')!.value, quantity: this.current_items.at(i).get('quantity')!.value};
+    this.backendService.deleteOrderItem(orderItem).subscribe(() => this.loadOrderItems());
   }
 }
