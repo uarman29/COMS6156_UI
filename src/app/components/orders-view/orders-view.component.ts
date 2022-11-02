@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -17,11 +17,11 @@ export class OrdersViewComponent implements OnInit {
   dataSource!:MatTableDataSource<Order>;
 
   orderForm = this.fb.group({
-    user_id: [0],
-    card_id: [0],
-    address_id: [0],
-    order_time: [''],
-    total: [0],
+    user_id: [, Validators.required],
+    card_id: [, Validators.required],
+    address_id: [, Validators.required],
+    order_time: [, Validators.required],
+    total: [, Validators.required],
   });
 
   get user_id() {
@@ -58,6 +58,10 @@ export class OrdersViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    $(".btn-close").on("click", function(){
+      $("#order-add-success-alert").addClass("d-none");
+    })
+
     this.ar.queryParamMap.subscribe(params =>{
       this.backendService.getOrders(params).subscribe(orders =>{
         this.orders = orders;
@@ -74,6 +78,10 @@ export class OrdersViewComponent implements OnInit {
       return;
     }
     let o:Order = {order_id: Math.max(...this.orders.map(order => order.order_id), 0) + 1, user_id: this.user_id.value, card_id: this.card_id.value, address_id: this.address_id.value, order_time: this.order_time.value, total: this.total.value};
-    this.backendService.addOrder(o).subscribe(() => this.updateData());
+    this.backendService.addOrder(o).subscribe(() => {
+      this.updateData();
+      this.orderForm.reset();
+      $("#order-add-success-alert").removeClass("d-none");
+    });
   }
 }

@@ -2,7 +2,7 @@
     <div class="row address-form-group mb-3">
         <div class="col-md-2 address-form-control">
             <label for="user_id" class="form-label">User Id</label>
-            <input type="number" class="form-control" formControlName = "user_id" name="user_id" required>
+            <input type="number" class="form-control" formControlName = "user_id" name="user_id" step="1" min="1" required>
         </div>
 
         <div class="col-md-10 address-form-control">
@@ -32,6 +32,10 @@
         </div>
     </div>
 </form>
+<div id="address-add-success-alert" class="alert alert-success alert-dismissible fade show d-none" role="alert">
+    Successfully Added Address!
+    <button type="button" class="btn-close" aria-label="Close"></button>
+</div>
 <div class="mat-elevation-z8">
     <table mat-table [dataSource]="dataSource">
         <ng-container matColumnDef="address_id">

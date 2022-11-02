@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackendServiceService, Card } from 'src/app/services/backend-service.service';
 
@@ -14,10 +14,10 @@ export class CardViewComponent implements OnInit {
   id!:number;
 
   cardForm = this.fb.group({
-    user_id: [0],
-    card_no: [''],
-    expiration_date: [''],
-    cvv: ['']
+    user_id: [, Validators.required],
+    card_no: [, Validators.required],
+    expiration_date: [, Validators.required],
+    cvv: [, Validators.required]
   });
 
   get user_id() {

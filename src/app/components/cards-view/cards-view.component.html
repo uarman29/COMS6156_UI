@@ -2,22 +2,22 @@
     <div class="row card-form-group mb-3">
         <div class="col-md-2 card-form-control">
             <label for="user_id" class="form-label">User Id</label>
-            <input type="number" class="form-control" formControlName = "user_id" name="user_id" required>
+            <input type="number" class="form-control" formControlName = "user_id" name="user_id" step="1" min="1" required>
         </div>
 
         <div class="col-md-4 card-form-control">
             <label for="card_no" class="form-label">Card No</label>
-            <input type="text" class="form-control" formControlName = "card_no" name="card_no" required>
+            <input type="text" class="form-control" formControlName = "card_no" name="card_no" pattern="[0-9]{16}" required>
         </div>
 
         <div class="col-md-2 card-form-control">
             <label for="expiration_date" class="form-label">Expiration Date</label>
-            <input type="text" class="form-control" formControlName = "expiration_date" name="expiration_date" required>
+            <input type="month" class="form-control" formControlName = "expiration_date" name="expiration_date" required>
         </div>
 
         <div class="col-md-2 card-form-control">
             <label for="cvv" class="form-label">CVV</label>
-            <input type="text" class="form-control" formControlName = "cvv" name="cvv" required>
+            <input type="text" class="form-control" formControlName = "cvv" name="cvv" pattern="[0-9]{3}" required>
         </div>
 
         <div class="col-md-2 card-form-control">
@@ -25,6 +25,10 @@
         </div>
     </div>
 </form>
+<div id="card-add-success-alert" class="alert alert-success alert-dismissible fade show d-none" role="alert">
+    Successfully Added Card!
+    <button type="button" class="btn-close" aria-label="Close"></button>
+</div>
 <div class="mat-elevation-z8">
     <table mat-table [dataSource]="dataSource">
         <ng-container matColumnDef="card_id">

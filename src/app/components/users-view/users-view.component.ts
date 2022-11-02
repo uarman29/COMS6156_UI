@@ -44,6 +44,10 @@ export class UsersViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    $(".btn-close").on("click", function(){
+      $("#user-add-success-alert").addClass("d-none");
+    });
+
     this.ar.queryParamMap.subscribe(params =>{
       this.backendService.getUsers(params).subscribe(users =>{
         this.users = users;
@@ -74,7 +78,11 @@ export class UsersViewComponent implements OnInit {
       return;
     }
     let u:User = {user_id: Math.max(...this.users.map(user => user.user_id), 0) + 1, first_name: this.first_name.value, last_name: this.last_name.value};
-    this.backendService.addUser(u).subscribe(() => this.updateData());
+    this.backendService.addUser(u).subscribe(() => {
+      this.updateData();
+      this.userForm.reset();
+      $("#user-add-success-alert").removeClass("d-none");
+    });
   }
 
 }

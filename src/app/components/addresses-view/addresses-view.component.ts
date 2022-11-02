@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -17,11 +17,11 @@ export class AddressesViewComponent implements OnInit {
   dataSource!:MatTableDataSource<Address>;
 
   addressForm = this.fb.group({
-    user_id: [0],
-    street_address: [''],
-    state: [''],
-    city: [''],
-    zip_code: [''],
+    user_id: [, Validators.required],
+    street_address: [, Validators.required],
+    state: [, Validators.required],
+    city: [, Validators.required],
+    zip_code: [, Validators.required],
   });
 
   get user_id() {
@@ -57,6 +57,10 @@ export class AddressesViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    $(".btn-close").on("click", function(){
+      $("#address-add-success-alert").addClass("d-none");
+    })
+
     this.ar.queryParamMap.subscribe(params =>{
       this.backendService.getAddresses(params).subscribe(addresses =>{
         this.addresses = addresses;
@@ -73,6 +77,10 @@ export class AddressesViewComponent implements OnInit {
       return;
     }
     let a:Address = {address_id: Math.max(...this.addresses.map(address => address.address_id), 0) + 1, user_id: this.user_id.value, street_address: this.street_address.value, state: this.state.value, city: this.city.value, zip_code: this.zip_code.value};
-    this.backendService.addAddress(a).subscribe(() => this.updateData());
+    this.backendService.addAddress(a).subscribe(() => {
+      this.updateData();
+      this.addressForm.reset();
+      $("#address-add-success-alert").removeClass("d-none");
+    });
   }
 }

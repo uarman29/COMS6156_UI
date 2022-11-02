@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { BackendServiceService, Product } from 'src/app/services/backend-service.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -17,9 +17,9 @@ export class ProductsViewComponent implements OnInit {
   dataSource!:MatTableDataSource<Product>;
 
   productForm = this.fb.group({
-    name: [''],
-    category: [''],
-    price: [0]
+    name: [, Validators.required],
+    category: [, Validators.required],
+    price: [, Validators.required]
   });
 
   get name() {
@@ -47,6 +47,10 @@ export class ProductsViewComponent implements OnInit {
   }
   
   ngOnInit(): void {
+    $(".btn-close").on("click", function(){
+      $("#product-add-success-alert").addClass("d-none");
+    });
+
     this.ar.queryParamMap.subscribe(params =>{
       this.backendService.getProducts(params).subscribe(products =>{
         this.products = products;
@@ -63,7 +67,11 @@ export class ProductsViewComponent implements OnInit {
       return;
     }
     let p:Product = {product_id: Math.max(...this.products.map(product => product.product_id), 0) + 1, name: this.name.value, category: this.category.value, price: this.price.value}
-    this.backendService.addProduct(p).subscribe(() => this.updateData());
+    this.backendService.addProduct(p).subscribe(() => {
+      this.updateData();
+      this.productForm.reset();
+      $("#product-add-success-alert").removeClass("d-none");
+    });
   }
 
 }
