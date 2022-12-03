@@ -14,15 +14,10 @@ export class CardViewComponent implements OnInit {
   id!:number;
 
   cardForm = this.fb.group({
-    user_id: [, Validators.required],
     card_no: [, Validators.required],
     expiration_date: [, Validators.required],
     cvv: [, Validators.required]
   });
-
-  get user_id() {
-    return this.cardForm.get('user_id') as FormControl;
-  }
 
   get card_no() {
     return this.cardForm.get('card_no') as FormControl;
@@ -40,15 +35,17 @@ export class CardViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = Number(this.route.snapshot.paramMap.get('id'));
-    this.backendService.getCard(this.id).subscribe(card =>{
-      if(card === undefined)
-        this.router.navigate(['/cards']);
-      else
-        this.card = card;
-      this.user_id.setValue(this.card.user_id);
-      this.card_no.setValue(this.card.card_no);
-      this.expiration_date.setValue(this.card.expiration_date);
-      this.cvv.setValue(this.card.cvv);
+    this.backendService.getCard(this.id).subscribe(response =>{
+      if(response.status == 200) {
+        if(response.body) {
+          this.card = response.body;
+          this.card_no.setValue(this.card.card_no);
+          this.expiration_date.setValue(this.card.expiration_date);
+          this.cvv.setValue(this.card.cvv);
+        } else {
+          this.router.navigate(['/cards']);
+        }
+      }
     });
   }
 
@@ -56,7 +53,7 @@ export class CardViewComponent implements OnInit {
     if(!this.cardForm.valid){
       return;
     }
-    let c:Card = {card_id: this.card.card_id, user_id: this.user_id.value, card_no: this.card_no.value, expiration_date: this.expiration_date.value, cvv: this.cvv.value};
+    let c:Card = {card_id: this.card.card_id, user_id: 1, card_no: this.card_no.value, expiration_date: this.expiration_date.value, cvv: this.cvv.value};
     this.backendService.updateCard(c).subscribe();
     this.router.navigate(['/cards']);
   }

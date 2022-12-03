@@ -13,20 +13,15 @@ import { Address, BackendServiceService } from 'src/app/services/backend-service
 export class AddressesViewComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   addresses: Address[] = [];
-  displayedColumns:string[] = ["address_id", "user_id", "street_address", "state", "city", "zip_code"];
+  displayedColumns:string[] = ["address_id", "street_address", "state", "city", "zip_code"];
   dataSource!:MatTableDataSource<Address>;
 
   addressForm = this.fb.group({
-    user_id: [, Validators.required],
     street_address: [, Validators.required],
     state: [, Validators.required],
     city: [, Validators.required],
     zip_code: [, Validators.required],
   });
-
-  get user_id() {
-    return this.addressForm.get('user_id') as FormControl;
-  }
 
   get street_address() {
     return this.addressForm.get('street_address') as FormControl;
@@ -49,9 +44,13 @@ export class AddressesViewComponent implements OnInit {
 
   updateData() {
     this.ar.queryParamMap.subscribe(params =>{
-      this.backendService.getAddresses(params).subscribe(addresses =>{
-        this.addresses = addresses;
-        this.dataSource.data = this.addresses;
+      this.backendService.getAddresses(params).subscribe(response =>{
+        if(response.status == 200) {
+          if(response.body) {
+            this.addresses = response.body;
+            this.dataSource.data = this.addresses;
+          }
+        } 
       });
     });
   }
@@ -62,25 +61,29 @@ export class AddressesViewComponent implements OnInit {
     })
 
     this.ar.queryParamMap.subscribe(params =>{
-      this.backendService.getAddresses(params).subscribe(addresses =>{
-        this.addresses = addresses;
-        this.dataSource = new MatTableDataSource<Address>(this.addresses);
-        this.dataSource.paginator = this.paginator;
+      this.backendService.getAddresses(params).subscribe(response =>{
+        if(response.status == 200) {
+          if(response.body) {
+            this.addresses = response.body;
+            this.dataSource = new MatTableDataSource<Address>(this.addresses);
+            this.dataSource.paginator = this.paginator;
+          }
+        }
       });
     });
-
-    this.router.events.subscribe(() => this.updateData());
   }
 
   onSubmit() {
     if(!this.addressForm.valid){
       return;
     }
-    let a:Address = {address_id: Math.max(...this.addresses.map(address => address.address_id), 0) + 1, user_id: this.user_id.value, street_address: this.street_address.value, state: this.state.value, city: this.city.value, zip_code: this.zip_code.value};
-    this.backendService.addAddress(a).subscribe(() => {
-      this.updateData();
-      this.addressForm.reset();
-      $("#address-add-success-alert").removeClass("d-none");
+    let a:Address = {address_id: Math.max(...this.addresses.map(address => address.address_id), 0) + 1, user_id: 1, street_address: this.street_address.value, state: this.state.value, city: this.city.value, zip_code: this.zip_code.value};
+    this.backendService.addAddress(a).subscribe(response => {
+      if(response.status == 200) {
+        this.updateData();
+        this.addressForm.reset();
+        $("#address-add-success-alert").removeClass("d-none");
+      }
     });
   }
 }

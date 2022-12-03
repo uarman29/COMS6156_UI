@@ -14,16 +14,11 @@ export class AddressViewComponent implements OnInit {
   id!:number;
 
   addressForm = this.fb.group({
-    user_id: [0],
     street_address: [''],
     state: [''],
     city: [''],
     zip_code: [''],
   });
-
-  get user_id() {
-    return this.addressForm.get('user_id') as FormControl;
-  }
 
   get street_address() {
     return this.addressForm.get('street_address') as FormControl;
@@ -45,16 +40,16 @@ export class AddressViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = Number(this.route.snapshot.paramMap.get('id'));
-    this.backendService.getAddress(this.id).subscribe(address =>{
-      if(address === undefined)
-        this.router.navigate(['/addresses']);
-      else
-        this.address = address;
-      this.user_id.setValue(this.address.user_id);
-      this.street_address.setValue(this.address.street_address);
-      this.state.setValue(this.address.state);
-      this.city.setValue(this.address.city);
-      this.zip_code.setValue(this.address.zip_code);
+    this.backendService.getAddress(this.id).subscribe(response =>{
+      if(response.status == 200) {
+        if(response.body) {
+          this.address = response.body;
+          this.street_address.setValue(this.address.street_address);
+          this.state.setValue(this.address.state);
+          this.city.setValue(this.address.city);
+          this.zip_code.setValue(this.address.zip_code);
+        }
+      }
     });
   }
 
@@ -62,7 +57,7 @@ export class AddressViewComponent implements OnInit {
     if(!this.addressForm.valid){
       return;
     }
-    let a:Address = {address_id: this.address.address_id, user_id: this.user_id.value, street_address: this.street_address.value, state: this.state.value, city: this.city.value, zip_code: this.zip_code.value};
+    let a:Address = {address_id: this.address.address_id, user_id: 1, street_address: this.street_address.value, state: this.state.value, city: this.city.value, zip_code: this.zip_code.value};
     this.backendService.updateAddress(a).subscribe();
     this.router.navigate(['/addresses']);
   }

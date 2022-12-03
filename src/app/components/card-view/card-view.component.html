@@ -1,10 +1,5 @@
 <form [formGroup] = "cardForm">
     <div class="row card-form-group mb-3">
-        <div class="col-md-2 card-form-control">
-            <label for="user_id" class="form-label">User Id</label>
-            <input type="text" class="form-control" formControlName = "user_id" step="1" min="1" required>
-        </div>
-
         <div class="col-md-6 card-form-control">
             <label for="card_no" class="form-label">Card No.</label>
             <input type="text" class="form-control" formControlName = "card_no" pattern="[0-9]{16}"  required>

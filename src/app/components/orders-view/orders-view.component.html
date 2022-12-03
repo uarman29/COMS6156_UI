@@ -42,11 +42,6 @@
         <td mat-cell *matCellDef="let order"> <a routerLink="/orders/{{order.order_id}}">{{order.order_id}}</a></td>
         </ng-container>
     
-        <ng-container matColumnDef="user_id">
-        <th mat-header-cell *matHeaderCellDef> User Id </th>
-        <td mat-cell *matCellDef="let order"><a routerLink="/users/{{order.user_id}}">{{order.user_id}}</a> </td>
-        </ng-container>
-    
         <ng-container matColumnDef="card_id">
         <th mat-header-cell *matHeaderCellDef> Card Id </th>
         <td mat-cell *matCellDef="let order"> <a routerLink="/cards/{{order.card_id}}">{{order.card_id}}</a></td>

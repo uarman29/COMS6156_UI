@@ -16,62 +16,36 @@ export class ProductsViewComponent implements OnInit {
   displayedColumns:string[] = ["product_id", "name", "category", "price"];
   dataSource!:MatTableDataSource<Product>;
 
-  productForm = this.fb.group({
-    name: [, Validators.required],
-    category: [, Validators.required],
-    price: [, Validators.required]
-  });
-
-  get name() {
-    return this.productForm.get('name') as FormControl;
-  }
-
-  get category() {
-    return this.productForm.get('category') as FormControl;
-  }
-
-  get price() {
-    return this.productForm.get('price') as FormControl;
-  }
-
   constructor(private backendService:BackendServiceService, private fb:FormBuilder, private router: Router, private ar:ActivatedRoute) { 
   }
 
   updateData() {
     this.ar.queryParamMap.subscribe(params =>{
-      this.backendService.getProducts(params).subscribe(products =>{
-        this.products = products;
-        this.dataSource.data = this.products;
+      this.backendService.getProducts(params).subscribe(response =>{
+        if(response.status == 200) {
+          if(response.body) {
+            this.products = response.body;
+            this.dataSource.data = this.products;
+          }
+        }
       });
     });
   }
   
   ngOnInit(): void {
-    $(".btn-close").on("click", function(){
-      $("#product-add-success-alert").addClass("d-none");
-    });
 
     this.ar.queryParamMap.subscribe(params =>{
-      this.backendService.getProducts(params).subscribe(products =>{
-        this.products = products;
-        this.dataSource = new MatTableDataSource<Product>(this.products);
-        this.dataSource.paginator = this.paginator;
+      this.backendService.getProducts(params).subscribe(response =>{
+        if(response.status == 200) {
+          if(response.body) {
+            this.products = response.body;
+            this.dataSource = new MatTableDataSource<Product>(this.products);
+            this.dataSource.paginator = this.paginator;
+          }
+        }
       });
     });
 
     this.router.events.subscribe(() => this.updateData());
   }
-
-  onSubmit() {
-    if(!this.productForm.valid){
-      return;
-    }
-    let p:Product = {product_id: Math.max(...this.products.map(product => product.product_id), 0) + 1, name: this.name.value, category: this.category.value, price: this.price.value}
-    this.backendService.addProduct(p).subscribe(() => {
-      this.updateData();
-      this.productForm.reset();
-      $("#product-add-success-alert").removeClass("d-none");
-    });
-  }
-
 }

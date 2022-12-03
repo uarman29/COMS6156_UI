@@ -15,7 +15,6 @@ export class OrderViewComponent implements OnInit {
   id!:number;
 
   orderForm = this.fb.group({
-    user_id: [0],
     card_id: [0],
     address_id: [0],
     order_time: [''],
@@ -28,10 +27,6 @@ export class OrderViewComponent implements OnInit {
     quantity: [0],
     current_items: this.fb.array([])
   });
-
-  get user_id() {
-    return this.orderForm.get('user_id') as FormControl;
-  }
 
   get card_id() {
     return this.orderForm.get('card_id') as FormControl;
@@ -64,15 +59,19 @@ export class OrderViewComponent implements OnInit {
   constructor(private backendService:BackendServiceService, private fb:FormBuilder, private route: ActivatedRoute, private router: Router) { }
 
   loadOrderItems() {
-    this.backendService.getOrderItems(this.order.order_id).subscribe(orderItems =>{
-      this.current_items.clear();
-      this.orderItems = orderItems;
-      for(let item of orderItems) {
-        let itemForm = this.fb.group({
-          product_id: [item.product_id],
-          quantity: [item.quantity]
-        });
-        this.current_items.push(itemForm);
+    this.backendService.getOrderItems(this.order.order_id).subscribe(response =>{
+      if(response.status == 200) {
+        if(response.body) {
+          this.current_items.clear();
+          this.orderItems = response.body;
+          for(let item of this.orderItems) {
+            let itemForm = this.fb.group({
+              product_id: [item.product_id],
+              quantity: [item.quantity]
+            });
+            this.current_items.push(itemForm);
+          }
+        }
       }
     });
   }
@@ -84,7 +83,6 @@ export class OrderViewComponent implements OnInit {
         this.router.navigate(['/orders']);
       else
         this.order = order;
-      this.user_id.setValue(this.order.user_id);
       this.card_id.setValue(this.order.card_id);
       this.address_id.setValue(this.order.address_id);
       this.order_time.setValue(this.order.order_time);
@@ -98,7 +96,7 @@ export class OrderViewComponent implements OnInit {
     if(!this.orderForm.valid){
       return;
     }
-    let o:Order = {order_id: this.order.order_id, user_id: this.user_id.value, card_id: this.card_id.value, address_id: this.address_id.value, order_time: this.order_time.value, total: this.total.value};
+    let o:Order = {order_id: this.order.order_id, user_id: 1, card_id: this.card_id.value, address_id: this.address_id.value, order_time: this.order_time.value, total: this.total.value};
     this.backendService.updateOrder(o).subscribe();
     this.router.navigate(['/orders']);
   }

@@ -1,11 +1,6 @@
 <form [formGroup] = "cardForm" (ngSubmit)="onSubmit()">
     <div class="row card-form-group mb-3">
-        <div class="col-md-2 card-form-control">
-            <label for="user_id" class="form-label">User Id</label>
-            <input type="number" class="form-control" formControlName = "user_id" name="user_id" step="1" min="1" required>
-        </div>
-
-        <div class="col-md-4 card-form-control">
+        <div class="col-md-5 card-form-control">
             <label for="card_no" class="form-label">Card No</label>
             <input type="text" class="form-control" formControlName = "card_no" name="card_no" pattern="[0-9]{16}" required>
         </div>
@@ -20,7 +15,7 @@
             <input type="text" class="form-control" formControlName = "cvv" name="cvv" pattern="[0-9]{3}" required>
         </div>
 
-        <div class="col-md-2 card-form-control">
+        <div class="col-md-3 card-form-control">
             <button type="submit" class="btn btn-primary" [disabled]="!cardForm.valid">Add</button>
         </div>
     </div>
@@ -34,11 +29,6 @@
         <ng-container matColumnDef="card_id">
         <th mat-header-cell *matHeaderCellDef> Card Id </th>
         <td mat-cell *matCellDef="let card"> <a routerLink="/cards/{{card.card_id}}">{{card.card_id}}</a></td>
-        </ng-container>
-    
-        <ng-container matColumnDef="user_id">
-        <th mat-header-cell *matHeaderCellDef> User Id </th>
-        <td mat-cell *matCellDef="let card"><a routerLink="/users/{{card.user_id}}">{{card.user_id}}</a> </td>
         </ng-container>
     
         <ng-container matColumnDef="card_no">

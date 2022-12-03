@@ -1,12 +1,19 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { AuthService } from './auth.service';
+
+export interface map {
+	[key: string]: string;
+}
 
 export interface Link {
 	rel: string,
 	href: string
 }
+
 export interface Product {
 	product_id: number,
 	name: string,
@@ -63,40 +70,45 @@ export interface OrderItem {
 })
 export class BackendServiceService {
 
-	product_microservice_url = environment.product_microservice_url
-	user_microservice_url = environment.user_microservice_url
-	order_microservice_url = environment.order_microservice_url
+	composite_microservice_url = environment.composite_microservice_url
 
-	constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient, private auth:AuthService) { }
 
-	getProducts(params:Object = {}): Observable<Product[]> {
-		return this.http.get<Product[]>(this.product_microservice_url + "/products", params=params);
+	login() {
+		window.location.href = this.composite_microservice_url + "/login";
 	}
 
-	getProduct(product_id: number): Observable<Product|undefined> {
-		return this.http.get<Product>(this.product_microservice_url + `/products/${product_id}`);
+	logout() {
+		window.location.href = this.composite_microservice_url + "/logout";
 	}
 
-	addProduct(product: Product): Observable<Product> {
-		return this.http.post<Product>(this.product_microservice_url + "/products", product);
+	getProducts(params:Object = {}): Observable<HttpResponse<Product[]>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.get<Product[]>(this.composite_microservice_url + "/products", options);
 	}
 
-	updateProduct(product: Product): Observable<Product> {
-		return this.http.put<Product>(this.product_microservice_url + `/products/${product.product_id}`, product);
+	getProduct(product_id: number): Observable<HttpResponse<Product>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.get<Product>(this.composite_microservice_url + `/products/${product_id}`, options);
 	}
 
-	deleteProduct(product_id: number): Observable<Product> {
-		return this.http.delete<Product>(this.product_microservice_url + `/products/${product_id}`);
+	getUser(): Observable<HttpResponse<User>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.get<User>(this.composite_microservice_url + `/user`, options);
 	}
-
-	getUsers(params:Object = {}): Observable<User[]> {
-		return this.http.get<User[]>(this.user_microservice_url + "/users", params=params);
-	}
-
-	getUser(user_id: number): Observable<User|undefined> {
-		return this.http.get<User>(this.user_microservice_url + `/users/${user_id}`);
-	}
-
+	/*
 	addUser(user: User): Observable<User> {
 		return this.http.post<User>(this.user_microservice_url + "/users", user);
 	}
@@ -108,80 +120,171 @@ export class BackendServiceService {
 	deleteUser(user_id: number): Observable<User> {
 		return this.http.delete<User>(this.user_microservice_url + `/users/${user_id}`);
 	}
+	*/
 
-	getCards(params:Object = {}): Observable<Card[]> {
-		return this.http.get<Card[]>(this.user_microservice_url + "/cards", params=params);
+	getCards(params:Object = {}): Observable<HttpResponse<Card[]>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.get<Card[]>(this.composite_microservice_url + "/cards", options);
 	}
 
-	getCard(card_id: number): Observable<Card|undefined> {
-		return this.http.get<Card>(this.user_microservice_url + `/cards/${card_id}`);
+	getCard(card_id: number): Observable<HttpResponse<Card>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.get<Card>(this.composite_microservice_url + `/cards/${card_id}`, options);
 	}
 
-	addCard(card: Card): Observable<Card> {
-		return this.http.post<Card>(this.user_microservice_url + "/cards", card);
+	addCard(card: Card): Observable<HttpResponse<Card>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.post<Card>(this.composite_microservice_url + "/cards", card, options);
 	}
 
-	updateCard(card: Card): Observable<Card> {
-		return this.http.put<Card>(this.user_microservice_url + `/cards/${card.card_id}`, card);
+	updateCard(card: Card): Observable<HttpResponse<Card>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.put<Card>(this.composite_microservice_url + `/cards/${card.card_id}`, card, options);
 	}
 
-	deleteCard(card_id: number): Observable<Card> {
-		return this.http.delete<Card>(this.user_microservice_url + `/cards/${card_id}`);
+	deleteCard(card_id: number): Observable<HttpResponse<Card>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.delete<Card>(this.composite_microservice_url + `/cards/${card_id}`, options);
 	}
 
-	getAddresses(params:Object = {}): Observable<Address[]> {
-		return this.http.get<Address[]>(this.user_microservice_url + "/addresses", params=params);
+	getAddresses(params:Object = {}): Observable<HttpResponse<Address[]>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.get<Address[]>(this.composite_microservice_url + "/addresses", options);
 	}
 
-	getAddress(address_id: number): Observable<Address|undefined> {
-		return this.http.get<Address>(this.user_microservice_url + `/addresses/${address_id}`);
+	getAddress(address_id: number): Observable<HttpResponse<Address>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.get<Address>(this.composite_microservice_url + `/addresses/${address_id}`, options);
 	}
 
-	addAddress(address: Address): Observable<Address> {
-		return this.http.post<Address>(this.user_microservice_url + "/addresses", address);
+	addAddress(address: Address): Observable<HttpResponse<Address>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.post<Address>(this.composite_microservice_url + "/addresses", address, options);
 	}
 
-	updateAddress(address: Address): Observable<Address> {
-		return this.http.put<Address>(this.user_microservice_url + `/addresses/${address.address_id}`, address);
+	updateAddress(address: Address): Observable<HttpResponse<Address>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.put<Address>(this.composite_microservice_url + `/addresses/${address.address_id}`, address, options);
 	}
 
-	deleteAddress(address_id: number): Observable<Address> {
-		return this.http.delete<Address>(this.user_microservice_url + `/addresses/${address_id}`);
+	deleteAddress(address_id: number): Observable<HttpResponse<Address>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.delete<Address>(this.composite_microservice_url + `/addresses/${address_id}`, options);
 	}
 
-	getOrders(params:Object = {}): Observable<Order[]> {
-		return this.http.get<Order[]>(this.order_microservice_url + "/orders", params=params);
+	getOrders(params:Object = {}): Observable<HttpResponse<Order[]>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.get<Order[]>(this.composite_microservice_url + "/orders", options);
 	}
 
 	getOrder(order_id: number): Observable<Order|undefined> {
-		return this.http.get<Order>(this.order_microservice_url + `/orders/${order_id}`);
+		return this.http.get<Order>(this.composite_microservice_url + `/orders/${order_id}`);
 	}
 
-	addOrder(order: Order): Observable<Order> {
-		return this.http.post<Order>(this.order_microservice_url + "/orders", order);
+	addOrder(order: Order): Observable<HttpResponse<Order>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.post<Order>(this.composite_microservice_url + "/orders", order, options);
 	}
 
-	updateOrder(order: Order): Observable<Order> {
-		return this.http.put<Order>(this.order_microservice_url + `/orders/${order.order_id}`, order);
+	updateOrder(order: Order): Observable<HttpResponse<Order>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.put<Order>(this.composite_microservice_url + `/orders/${order.order_id}`, order, options);
 	}
 
-	deleteOrder(order_id: number): Observable<Order> {
-		return this.http.delete<Order>(this.order_microservice_url + `/orders/${order_id}`);
+	deleteOrder(order_id: number): Observable<HttpResponse<Order>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.delete<Order>(this.composite_microservice_url + `/orders/${order_id}`, options);
 	}
 
-	getOrderItems(order_id: number): Observable<OrderItem[]> {
-		return this.http.get<OrderItem[]>(this.order_microservice_url + `/orders/${order_id}/items`);
+	getOrderItems(order_id: number): Observable<HttpResponse<OrderItem[]>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.get<OrderItem[]>(this.composite_microservice_url + `/orders/${order_id}/items`, options);
 	}
 
-	addOrderItem(order_item: OrderItem): Observable<OrderItem> {
-		return this.http.post<OrderItem>(this.order_microservice_url + `/orders/${order_item.order_id}/items`, order_item);
+	addOrderItem(order_item: OrderItem): Observable<HttpResponse<OrderItem>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.post<OrderItem>(this.composite_microservice_url + `/orders/${order_item.order_id}/items`, order_item, options);
 	}	
 
-	updateOrderItem(order_item: OrderItem): Observable<Order> {
-		return this.http.put<Order>(this.order_microservice_url + `/orders/${order_item.order_id}/items/${order_item.product_id}`, order_item);
+	updateOrderItem(order_item: OrderItem): Observable<HttpResponse<OrderItem>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.put<OrderItem>(this.composite_microservice_url + `/orders/${order_item.order_id}/items/${order_item.product_id}`, order_item, options);
 	}
 
-	deleteOrderItem(order_item: OrderItem): Observable<Order> {
-		return this.http.delete<Order>(this.order_microservice_url + `/orders/${order_item.order_id}/items/${order_item.product_id}`);
+	deleteOrderItem(order_item: OrderItem): Observable<HttpResponse<OrderItem>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.delete<OrderItem>(this.composite_microservice_url + `/orders/${order_item.order_id}/items/${order_item.product_id}`, options);
 	}
 }

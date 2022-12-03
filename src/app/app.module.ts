@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { CookieService } from 'ngx-cookie-service';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
@@ -11,7 +12,6 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { ProductViewComponent } from './components/product-view/product-view.component';
-import { UsersViewComponent } from './components/users-view/users-view.component';
 import { UserViewComponent } from './components/user-view/user-view.component';
 import { CardsViewComponent } from './components/cards-view/cards-view.component';
 import { CardViewComponent } from './components/card-view/card-view.component';
@@ -19,6 +19,7 @@ import { AddressesViewComponent } from './components/addresses-view/addresses-vi
 import { AddressViewComponent } from './components/address-view/address-view.component';
 import { OrdersViewComponent } from './components/orders-view/orders-view.component';
 import { OrderViewComponent } from './components/order-view/order-view.component';
+import { LoginViewComponent } from './components/login-view/login-view.component';
 
 @NgModule({
   declarations: [
@@ -26,14 +27,14 @@ import { OrderViewComponent } from './components/order-view/order-view.component
     ProductsViewComponent,
     NavbarComponent,
     ProductViewComponent,
-    UsersViewComponent,
     UserViewComponent,
     CardsViewComponent,
     CardViewComponent,
     AddressesViewComponent,
     AddressViewComponent,
     OrdersViewComponent,
-    OrderViewComponent
+    OrderViewComponent,
+    LoginViewComponent
   ],
   imports: [
     BrowserModule,
@@ -45,7 +46,7 @@ import { OrderViewComponent } from './components/order-view/order-view.component
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [ CookieService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

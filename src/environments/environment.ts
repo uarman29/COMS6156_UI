@@ -4,9 +4,7 @@
 
 export const environment = {
   production: false,
-  product_microservice_url: "http://127.0.0.1:5000",
-	user_microservice_url: "http://127.0.0.1:5001",
-	order_microservice_url: "http://127.0.0.1:5002"
+  composite_microservice_url: "http://127.0.0.1:5000"
 };
 
 /*

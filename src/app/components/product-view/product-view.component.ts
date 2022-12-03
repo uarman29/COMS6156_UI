@@ -35,29 +35,16 @@ export class ProductViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = Number(this.route.snapshot.paramMap.get('id'));
-    this.backendService.getProduct(this.id).subscribe(product =>{
-      if(product === undefined)
-        this.router.navigate(['/products']);
-      else
-        this.product = product;
-      this.name.setValue(this.product.name);
-      this.category.setValue(this.product.category);
-      this.price.setValue(this.product.price);
+    this.backendService.getProduct(this.id).subscribe(response =>{
+      if(response.status == 200) {
+        if(response.body) {
+          this.product = response.body;
+          this.name.setValue(this.product.name);
+          this.category.setValue(this.product.category);
+          this.price.setValue(this.product.price);
+        }
+      }
     });
-  }
-
-  onUpdateSubmit() {
-    if(!this.productForm.valid){
-      return;
-    }
-    let p:Product = {product_id: this.product.product_id, name: this.name.value, category: this.category.value, price: this.price.value};
-    this.backendService.updateProduct(p).subscribe();
-    this.router.navigate(['/products']);
-  }
-
-  onDelete() {
-    this.backendService.deleteProduct(this.product.product_id).subscribe();
-    this.router.navigate(['/products']);
   }
 
 }
