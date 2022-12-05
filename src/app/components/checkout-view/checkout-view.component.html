@@ -1,40 +1,62 @@
-<div>
-    <div class="row" *ngFor="let item of cartItems">
-        <div>Product ID: {{item.product_id}}</div>
-        <div>Quantity: {{item.quantity}}</div>
+<div id="checkout" class="row pb-5">
+    <div id="checkout-left">
+        <form [formGroup] = "checkoutForm" class="mb-5">
+            <div>
+                <h2>Address</h2>
+                <div *ngIf="selectedAddress;else no_addresses">
+                    <div class="row" id="checkout-address">
+                        <mat-form-field appearance="fill" class="col-2">
+                            <mat-label>Address Id:</mat-label>
+                            <mat-select formControlName="address_id" name="address_id" (selectionChange)="changeAddress()">
+                                <mat-option *ngFor="let address of addresses" [value]="address.address_id">
+                                {{address.address_id}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <div class="col-4">Street Address: {{selectedAddress.street_address}}</div>
+                        <div class="col-2">State: {{selectedAddress.state}}</div>
+                        <div class="col-2">City: {{selectedAddress.city}}</div>
+                        <div class="col-2">Zip Code: {{selectedAddress.zip_code}}</div>
+                    </div>
+                </div>
+                <ng-template #no_addresses><h6>No addresses found</h6></ng-template>
+            </div>
+            <div class="mt-5">
+                <h2>Card</h2>
+                <div *ngIf="selectedCard;else no_cards">
+                    <div class="row" id="checkout-card">
+                        <mat-form-field appearance="fill" class="col-2">
+                            <mat-label>Card Id:</mat-label>
+                            <mat-select formControlName="card_id" name="card_id" (selectionChange)="changeCard()">
+                            <mat-option *ngFor="let card of cards" [value]="card.card_id">
+                                {{card.card_id}}
+                            </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <div class="col-4">Card No: {{selectedCard.card_no}}</div>
+                        <div class="col-4">Expiration Date: {{selectedCard.expiration_date}}</div>
+                        <div class="col-2">CVV: {{selectedCard.cvv}}</div>  
+                    </div>
+                </div>
+                <ng-template #no_cards><h6>No cards found</h6></ng-template>
+            </div>
+        </form>
+        <h2>Cart</h2>
+        <div class="row" id="checkout-headers">
+            <h2 class="col-3">Image</h2>
+            <h2 class="col-3">Product Id</h2>
+            <h2 class="col-3">Quantity</h2>
+            <h2 class="col-3">Price</h2>
+        </div>
+        <div class="row checkout-item-row" *ngFor="let item of cartItems">
+            <div class="col-3"><img class="w-100" src="{{productMap[item.product_id].img_url}}"/></div>
+            <div class="col-3">{{item.product_id}}</div>
+            <div class="col-3">{{item.quantity}}</div>
+            <div class="col-3">{{productMap[item.product_id].price}}</div>
+        </div>
+    </div>
+    <div id="checkout-right">
+        <h2>Total: ${{total}}</h2>
+        <button (click)="placeOrder()" class="btn btn-primary">Order</button>
     </div>
 </div>
-<form [formGroup] = "checkoutForm">
-    <h3>Address</h3>
-    <div *ngIf="selectedAddress;else no_addresses">
-        <mat-form-field appearance="fill">
-        <mat-label>Address Id:</mat-label>
-        <mat-select formControlName="address_id" name="address_id" (selectionChange)="changeAddress()">
-            <mat-option *ngFor="let address of addresses" [value]="address.address_id">
-            {{address.address_id}}
-            </mat-option>
-        </mat-select>
-        </mat-form-field>
-        <div>Street Address: {{selectedAddress.street_address}}</div>
-        <div>State: {{selectedAddress.state}}</div>
-        <div>City: {{selectedAddress.city}}</div>
-        <div>Zip Code: {{selectedAddress.zip_code}}</div>
-    </div>
-    <ng-template #no_addresses><h6>No addresses found</h6></ng-template>
-    <h3>Card</h3>
-    <div *ngIf="selectedCard;else no_cards">
-        <mat-form-field appearance="fill">
-            <mat-label>Card Id:</mat-label>
-            <mat-select formControlName="card_id" name="card_id" (selectionChange)="changeCard()">
-            <mat-option *ngFor="let card of cards" [value]="card.card_id">
-                {{card.card_id}}
-            </mat-option>
-            </mat-select>
-        </mat-form-field>
-        <div>Card No: {{selectedCard.card_no}}</div>
-        <div>Expiration Date: {{selectedCard.expiration_date}}</div>
-        <div>CVV: {{selectedCard.cvv}}</div>  
-    </div>
-    <ng-template #no_cards><h6>No cards found</h6></ng-template>
-    <button (click)="placeOrder()">Order</button>
-</form>

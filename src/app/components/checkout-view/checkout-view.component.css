@@ -1,0 +1,49 @@
+.checkout-item-row {
+    border: 1px solid black;
+}
+
+.checkout-item-row > * {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    font-size: x-large;
+}
+
+#checkout-left {
+    width: 70%;
+}
+
+#checkout-right {
+    width: 30%;
+    text-align: center;
+}
+
+#checkout {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+#checkout-headers > * {
+    text-align: center;
+    border: 1px solid black;
+}
+
+#checkout-card > * {
+    align-self: center;
+}
+
+#checkout-address > * {
+    align-self: center;
+}
+
+::ng-deep .mat-form-field-wrapper{
+    padding: 0;
+}
+
+::ng-deep .mat-form-field-underline {
+    display: none;
+}

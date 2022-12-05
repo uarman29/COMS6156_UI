@@ -1,0 +1,21 @@
+div, h2, input {
+    text-align: center;
+}
+
+h2 {
+    border: 1px solid black;
+}
+
+.cart-item-form-row {
+    border: 1px solid black;
+}
+
+.cart-item-form-row > * {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    font-size: x-large;
+}

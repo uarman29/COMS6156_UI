@@ -73,6 +73,10 @@ export interface CartItem {
 	links?: Link[]
 }
 
+export interface ProductMap {
+	[key: number]: Product;
+}
+
 @Injectable({
 	providedIn: 'root'
 })

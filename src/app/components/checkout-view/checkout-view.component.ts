@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Address, BackendServiceService, Card, CartItem, Order, OrderItem } from 'src/app/services/backend-service.service';
+import { Address, BackendServiceService, Card, CartItem, Order, OrderItem, Product, ProductMap } from 'src/app/services/backend-service.service';
 
 @Component({
   selector: 'app-checkout-view',
@@ -10,11 +10,13 @@ import { Address, BackendServiceService, Card, CartItem, Order, OrderItem } from
 })
 export class CheckoutViewComponent implements OnInit {
 
+  productMap:ProductMap = {};
   cartItems:CartItem[] = [];
   addresses:Address[] = [];
   selectedAddress?:Address;
   cards:Card[] = [];
   selectedCard?:Card;
+  total: number = 0;
 
   checkoutForm = this.fb.group({
     address_id: [],
@@ -31,18 +33,35 @@ export class CheckoutViewComponent implements OnInit {
 
   constructor(private fb:FormBuilder, private backendService:BackendServiceService, private router:Router) { }
 
+  loadProducts() {
+    this.backendService.getProducts().subscribe(response =>{
+      if(response.status == 200) {
+        if(response.body) {
+          let products:Product[] = response.body;
+          products.forEach(product =>{
+            this.productMap[product.product_id] = product;
+          });
+          this.loadCartItems();
+        }
+      }
+    });
+  }
+
   loadCartItems() {
     this.backendService.getCartItems().subscribe(response =>{
       if(response.status == 200) {
         if(response.body) {
           this.cartItems = response.body;
+          this.cartItems.forEach(item =>{
+            this.total += item.quantity * this.productMap[item.product_id].price;
+          })
         }
       }
     });
   }
 
   ngOnInit(): void {
-    this.loadCartItems();
+    this.loadProducts();
     this.backendService.getAddresses().subscribe(response =>{
       if(response.status == 200) {
         if(response.body) {
@@ -84,16 +103,16 @@ export class CheckoutViewComponent implements OnInit {
 
   placeOrder() {
     if(this.cartItems.length > 0) {
-      let o:Order = {order_id: 1, card_id: this.card_id.value, address_id: this.address_id.value, total: 0, order_time: new Date().toISOString().slice(0, 19).replace('T', ' ')};
-      this.backendService.addOrder(o).subscribe(response =>{
+      let o:Order = {order_id: 1, card_id: this.card_id.value, address_id: this.address_id.value, total: this.total, order_time: new Date().toISOString().slice(0, 19).replace('T', ' ')};
+      this.backendService.addOrder(o).subscribe( async response =>{
         if(response.status == 200) {
           if(response.body){
             o = response.body;
-            this.cartItems.forEach(element => {
+            for await(const element of this.cartItems){
               let oi:OrderItem = {order_id: o.order_id, product_id: element.product_id, quantity: element.quantity};
               this.backendService.addOrderItem(oi).subscribe();
               this.backendService.deleteCartItem(element).subscribe();
-            });
+            }
             this.router.navigateByUrl('/orders');
           }
         }
