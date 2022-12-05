@@ -63,7 +63,7 @@ export class CardsViewComponent implements OnInit {
           if(response.body) {
             this.cards = response.body
             this.dataSource = new MatTableDataSource<Card>(this.cards);
-        this.dataSource.paginator = this.paginator;
+            this.dataSource.paginator = this.paginator;
           } else
             this.router.navigate(['/']);
         }

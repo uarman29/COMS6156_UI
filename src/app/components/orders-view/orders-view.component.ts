@@ -16,29 +16,6 @@ export class OrdersViewComponent implements OnInit {
   displayedColumns:string[] = ["order_id", "card_id", "address_id", "order_time", "total"];
   dataSource!:MatTableDataSource<Order>;
 
-  orderForm = this.fb.group({
-    card_id: [, Validators.required],
-    address_id: [, Validators.required],
-    order_time: [, Validators.required],
-    total: [, Validators.required],
-  });
-
-  get card_id() {
-    return this.orderForm.get('card_id') as FormControl;
-  }
-
-  get address_id() {
-    return this.orderForm.get('address_id') as FormControl;
-  }
-
-  get order_time() {
-    return this.orderForm.get('order_time') as FormControl;
-  }
-
-  get total() {
-    return this.orderForm.get('total') as FormControl;
-  }
-
 
   constructor(private backendService:BackendServiceService, private fb:FormBuilder, private router: Router, private ar:ActivatedRoute) { 
   }
@@ -74,15 +51,4 @@ export class OrdersViewComponent implements OnInit {
     });
   }
 
-  onSubmit() {
-    if(!this.orderForm.valid){
-      return;
-    }
-    let o:Order = {order_id: Math.max(...this.orders.map(order => order.order_id), 0) + 1, user_id: 1, card_id: this.card_id.value, address_id: this.address_id.value, order_time: this.order_time.value, total: this.total.value};
-    this.backendService.addOrder(o).subscribe(() => {
-      this.updateData();
-      this.orderForm.reset();
-      $("#order-add-success-alert").removeClass("d-none");
-    });
-  }
 }

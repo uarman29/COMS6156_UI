@@ -78,17 +78,18 @@ export class OrderViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = Number(this.route.snapshot.paramMap.get('id'));
-    this.backendService.getOrder(this.id).subscribe(order =>{
-      if(order === undefined)
-        this.router.navigate(['/orders']);
-      else
-        this.order = order;
-      this.card_id.setValue(this.order.card_id);
-      this.address_id.setValue(this.order.address_id);
-      this.order_time.setValue(this.order.order_time);
-      this.total.setValue(this.order.total);
-
-      this.loadOrderItems();
+    this.backendService.getOrder(this.id).subscribe(response =>{
+      if(response.status == 200) {
+        if(response.body) {
+          this.order = response.body;
+          this.card_id.setValue(this.order.card_id);
+          this.address_id.setValue(this.order.address_id);
+          this.order_time.setValue(this.order.order_time);
+          this.total.setValue(this.order.total);
+          this.loadOrderItems();
+        }
+      }
+      
     });
   }
 

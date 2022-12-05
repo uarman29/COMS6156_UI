@@ -19,6 +19,7 @@ export interface Product {
 	name: string,
 	category: string,
 	price: number,
+	img_url?: string,
 	links?: Link[]
 }
 
@@ -31,7 +32,7 @@ export interface User {
 
 export interface Card {
 	card_id: number,
-	user_id: number,
+	user_id?: number,
 	card_no: string,
 	expiration_date: string,
 	cvv: string,
@@ -40,7 +41,7 @@ export interface Card {
 
 export interface Address {
 	address_id: number,
-	user_id: number,
+	user_id?: number,
 	state: string,
 	city: string,
 	street_address: string,
@@ -50,16 +51,23 @@ export interface Address {
 
 export interface Order {
 	order_id: number,
-	user_id: number,
+	user_id?: number,
 	card_id: number,
 	address_id: number,
-	order_time: Date,
+	order_time: string,
 	total: number,
 	links?: Link[]
 }
 
 export interface OrderItem {
 	order_id: number,
+	product_id: number,
+	quantity: number,
+	links?: Link[]
+}
+
+export interface CartItem {
+	user_id?: string,
 	product_id: number,
 	quantity: number,
 	links?: Link[]
@@ -221,8 +229,13 @@ export class BackendServiceService {
 		return this.http.get<Order[]>(this.composite_microservice_url + "/orders", options);
 	}
 
-	getOrder(order_id: number): Observable<Order|undefined> {
-		return this.http.get<Order>(this.composite_microservice_url + `/orders/${order_id}`);
+	getOrder(order_id: number): Observable<HttpResponse<Order>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.get<Order>(this.composite_microservice_url + `/orders/${order_id}`, options);
 	}
 
 	addOrder(order: Order): Observable<HttpResponse<Order>> {
@@ -286,5 +299,50 @@ export class BackendServiceService {
 				.set("Authorization", this.auth.getAPIKey())
 		};
 		return this.http.delete<OrderItem>(this.composite_microservice_url + `/orders/${order_item.order_id}/items/${order_item.product_id}`, options);
+	}
+
+	getCartItem(product_id: number): Observable<HttpResponse<CartItem>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.get<CartItem>(this.composite_microservice_url + `/cart/items/${product_id}`, options);
+	}
+
+	getCartItems(): Observable<HttpResponse<CartItem[]>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.get<CartItem[]>(this.composite_microservice_url + `/cart/items`, options);
+	}
+
+	addCartItem(cart_item: CartItem): Observable<HttpResponse<CartItem>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.post<CartItem>(this.composite_microservice_url + `/cart/items`, cart_item, options);
+	}	
+
+	updateCartItem(cart_item: CartItem): Observable<HttpResponse<CartItem>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.put<CartItem>(this.composite_microservice_url + `/cart/items/${cart_item.product_id}`, cart_item, options);
+	}
+
+	deleteCartItem(cart_item: CartItem): Observable<HttpResponse<CartItem>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.delete<CartItem>(this.composite_microservice_url + `/cart/items/${cart_item.product_id}`, options);
 	}
 }

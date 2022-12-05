@@ -4,6 +4,8 @@ import { AddressViewComponent } from './components/address-view/address-view.com
 import { AddressesViewComponent } from './components/addresses-view/addresses-view.component';
 import { CardViewComponent } from './components/card-view/card-view.component';
 import { CardsViewComponent } from './components/cards-view/cards-view.component';
+import { CartViewComponent } from './components/cart-view/cart-view.component';
+import { CheckoutViewComponent } from './components/checkout-view/checkout-view.component';
 import { LoginViewComponent } from './components/login-view/login-view.component';
 import { OrderViewComponent } from './components/order-view/order-view.component';
 import { OrdersViewComponent } from './components/orders-view/orders-view.component';
@@ -21,7 +23,9 @@ const routes: Routes = [
   { path: 'addresses', component: AddressesViewComponent },
   { path: 'orders/:id', component: OrderViewComponent },
   { path: 'orders', component: OrdersViewComponent },
-  { path: 'login', component: LoginViewComponent }
+  { path: 'login', component: LoginViewComponent },
+  { path: 'cart', component: CartViewComponent },
+  { path: 'checkout', component: CheckoutViewComponent }
 ];
 
 @NgModule({

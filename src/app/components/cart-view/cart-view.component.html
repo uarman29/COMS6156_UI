@@ -1,0 +1,30 @@
+<div>
+    <h3>Contents</h3>
+    <form [formGroup] = "cartItemForm">
+      <ng-container formArrayName="current_items">
+        <ng-container *ngFor="let itemForm of current_items.controls; let i = index">
+          <div class="cart-item-form-row" [formGroupName]="i">
+            <div class="row mb-3">
+              <div class="col-md-4">
+                  <label for="product_id" class="form-label">Product Id</label>
+                  <input type="number" class="form-control" formControlName = "product_id" required [attr.disabled]="true">
+              </div>
+              <div class="col-md-4">
+                <label for="quantity" class="form-label">Quantity</label>
+                <input type="number" class="form-control" formControlName = "quantity" required>
+              </div>
+      
+              <div class="col-md-2 text-center d-flex flex-column justify-content-end">
+                <button type="button" class="btn btn-secondary" [disabled]="!itemForm.valid" (click)="updateCartItem(i)">Update</button>
+              </div>
+
+              <div class="col-md-2 text-center d-flex flex-column justify-content-end">
+                <button type="button" class="btn btn-warning" [disabled]="!itemForm.valid" (click)="deleteCartItem(i)">Delete</button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </form>
+    <a routerLink="/checkout"><button>Proceed to Checkout</button></a>
+</div>
