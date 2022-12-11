@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 import { BackendServiceService, Card } from 'src/app/services/backend-service.service';
 
 @Component({
@@ -31,7 +32,13 @@ export class CardViewComponent implements OnInit {
     return this.cardForm.get('cvv') as FormControl;
   }
 
-  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private route: ActivatedRoute, private router: Router) { }
+  constructor(
+    private backendService:BackendServiceService,
+    private fb:FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
+    private auth: AuthService
+  ) { }
 
   ngOnInit(): void {
     this.id = Number(this.route.snapshot.paramMap.get('id'));
@@ -46,6 +53,15 @@ export class CardViewComponent implements OnInit {
           this.router.navigate(['/cards']);
         }
       }
+    }, err => {
+      if(err.status == 400 || err.status == 403 || err.status == 404) {
+        this.router.navigateByUrl("/cards");
+      } else if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/cards");
+      }
     });
   }
 
@@ -54,13 +70,41 @@ export class CardViewComponent implements OnInit {
       return;
     }
     let c:Card = {card_id: this.card.card_id, user_id: 1, card_no: this.card_no.value, expiration_date: this.expiration_date.value, cvv: this.cvv.value};
-    this.backendService.updateCard(c).subscribe();
-    this.router.navigate(['/cards']);
+    this.backendService.updateCard(c).subscribe(response => {
+      if(response.status == 200){
+        this.router.navigate(['/cards']);
+      }
+    }, err => {
+      if(err.status == 400) {
+        alert("Invalid input");
+      } else if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 403 || err.status == 404) {
+        this.router.navigateByUrl("/cards");
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/cards");
+      }
+    });
   }
 
   onDelete() {
-    this.backendService.deleteCard(this.card.card_id).subscribe();
-    this.router.navigate(['/cards']);
+    this.backendService.deleteCard(this.card.card_id).subscribe(response => {
+      if(response.status == 200){
+        this.router.navigate(['/cards']);
+      }
+    }, err => {
+      if(err.status == 400) {
+        alert("Invalid input");
+      } else if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 403 || err.status == 404) {
+        this.router.navigateByUrl("/cards");
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/cards");
+      }
+    });
   }
 
 }

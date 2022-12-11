@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 import { BackendServiceService, CartItem, Product, ProductMap } from 'src/app/services/backend-service.service';
 
 @Component({
@@ -22,7 +23,12 @@ export class CartViewComponent implements OnInit {
     return this.cartItemForm.get('current_items') as FormArray;
   }
 
-  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private router: Router) { }
+  constructor(
+    private backendService:BackendServiceService,
+    private fb:FormBuilder,
+    private router: Router,
+    private auth: AuthService
+  ) { }
 
   loadCartItems() {
     this.backendService.getCartItems().subscribe(response =>{
@@ -41,6 +47,13 @@ export class CartViewComponent implements OnInit {
           }
         }
       }
+    }, err => {
+      if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/");
+      }
     });
   }
 
@@ -55,6 +68,13 @@ export class CartViewComponent implements OnInit {
           this.loadCartItems();
         }
       }
+    }, err => {
+      if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/");
+      }
     });
   }
 
@@ -64,12 +84,40 @@ export class CartViewComponent implements OnInit {
 
   updateCartItem(i: number) {
     let cartItem:CartItem = {product_id: this.current_items.at(i).get('product_id')!.value, quantity: this.current_items.at(i).get('quantity')!.value};
-    this.backendService.updateCartItem(cartItem).subscribe(() => this.loadCartItems());
+    this.backendService.updateCartItem(cartItem).subscribe(response => {
+      if(response.status == 200)
+        this.loadCartItems();
+    }, err => {
+      if(err.status == 400) {
+        alert("Invalid input");
+      } else if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 403 || err.status == 404) {
+        this.router.navigateByUrl("/");
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/");
+      }
+    });
   }
 
   deleteCartItem(i: number) {
     let cartItem:CartItem = {product_id: this.current_items.at(i).get('product_id')!.value, quantity: this.current_items.at(i).get('quantity')!.value};
-    this.backendService.deleteCartItem(cartItem).subscribe(() => this.loadCartItems());
+    this.backendService.deleteCartItem(cartItem).subscribe(response => {
+      if(response.status == 200)
+        this.loadCartItems();
+    }, err => {
+      if(err.status == 400) {
+        alert("Invalid input");
+      } else if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 403 || err.status == 404) {
+        this.router.navigateByUrl("/");
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/");
+      }
+    });
   }
 
 }

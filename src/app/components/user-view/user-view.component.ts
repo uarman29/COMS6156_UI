@@ -30,7 +30,6 @@ export class UserViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.backendService.getUser().subscribe(response =>{
-      console.log(response)
       if(response.status == 200) {
         if(response.body) {
           this.user = response.body;

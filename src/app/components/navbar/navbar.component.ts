@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
+import { BackendServiceService } from 'src/app/services/backend-service.service';
 
 @Component({
   selector: 'app-navbar',
@@ -8,13 +9,14 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class NavbarComponent implements OnInit {
 
-  constructor(public auth:AuthService) { }
+  constructor(public auth:AuthService, private backendService:BackendServiceService) { }
 
   ngOnInit(): void {
   }
 
-  logout() {
-    this.auth.logout();
+  async logout() {
+    await this.auth.logout();
+    this.backendService.logout();
   }
 
 }

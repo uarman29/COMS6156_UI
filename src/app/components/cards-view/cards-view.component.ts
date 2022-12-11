@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 import { BackendServiceService, Card } from 'src/app/services/backend-service.service';
 
 @Component({
@@ -35,8 +36,13 @@ export class CardsViewComponent implements OnInit {
   }
 
 
-  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private router:Router, private ar:ActivatedRoute) { 
-  }
+  constructor(
+    private backendService:BackendServiceService,
+    private fb:FormBuilder,
+    private router:Router,
+    private ar:ActivatedRoute,
+    private auth:AuthService
+  ) { }
 
   updateData() {
     this.ar.queryParamMap.subscribe(params =>{
@@ -47,6 +53,13 @@ export class CardsViewComponent implements OnInit {
             this.dataSource.data = this.cards;
           } else
             this.router.navigate(['/']);
+        }
+      }, err => {
+        if(err.status == 401) {
+          this.auth.logout();
+        } else if(err.status == 500) {
+          alert("Something went wrong");
+          this.router.navigateByUrl("/");
         }
       });
     });
@@ -67,6 +80,13 @@ export class CardsViewComponent implements OnInit {
           } else
             this.router.navigate(['/']);
         }
+      }, err => {
+        if(err.status == 401) {
+          this.auth.logout();
+        } else if(err.status == 500) {
+          alert("Something went wrong");
+          this.router.navigateByUrl("/");
+        }
       });
     });
   }
@@ -81,6 +101,17 @@ export class CardsViewComponent implements OnInit {
         this.updateData();
         this.cardForm.reset();
         $("#card-add-success-alert").removeClass("d-none");
+      }
+    }, err => {
+      if(err.status == 400 || err.status == 409) {
+        alert("Invalid Input");
+      } else if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 422) {
+        alert("Could not validate address");
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/");
       }
     });
   }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 import { Address, BackendServiceService } from 'src/app/services/backend-service.service';
 
 @Component({
@@ -36,7 +37,13 @@ export class AddressViewComponent implements OnInit {
     return this.addressForm.get('zip_code') as FormControl;
   }
 
-  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private route: ActivatedRoute, private router: Router) { }
+  constructor(
+    private backendService:BackendServiceService,
+    private fb:FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
+    private auth: AuthService
+  ) { }
 
   ngOnInit(): void {
     this.id = Number(this.route.snapshot.paramMap.get('id'));
@@ -50,6 +57,15 @@ export class AddressViewComponent implements OnInit {
           this.zip_code.setValue(this.address.zip_code);
         }
       }
+    }, err => {
+      if(err.status == 400 || err.status == 403 || err.status == 404) {
+        this.router.navigateByUrl("/addresses");
+      } else if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/addresses");
+      }
     });
   }
 
@@ -58,13 +74,41 @@ export class AddressViewComponent implements OnInit {
       return;
     }
     let a:Address = {address_id: this.address.address_id, user_id: 1, street_address: this.street_address.value, state: this.state.value, city: this.city.value, zip_code: this.zip_code.value};
-    this.backendService.updateAddress(a).subscribe();
-    this.router.navigate(['/addresses']);
+    this.backendService.updateAddress(a).subscribe(response =>{
+      if(response.status == 200) {
+        this.router.navigate(['/addresses']);
+      }
+    }, err => {
+      if(err.status == 400) {
+        alert("Invalid input");
+      } else if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 403 || err.status == 404) {
+        this.router.navigateByUrl("/addresses");
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/addresses");
+      }
+    });
   }
 
   onDelete() {
-    this.backendService.deleteAddress(this.address.address_id).subscribe();
-    this.router.navigate(['/addresses']);
+    this.backendService.deleteAddress(this.address.address_id).subscribe(response =>{
+      if(response.status == 200) {
+        this.router.navigate(['/addresses']);
+      }
+    }, err => {
+      if(err.status == 400) {
+        alert("Invalid input");
+      } else if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 403 || err.status == 404) {
+        this.router.navigateByUrl("/addresses");
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/addresses");
+      }
+    });
   }
 
 }
