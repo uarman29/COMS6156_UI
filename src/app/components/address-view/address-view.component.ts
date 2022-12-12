@@ -85,6 +85,8 @@ export class AddressViewComponent implements OnInit {
         this.auth.logout();
       } else if(err.status == 403 || err.status == 404) {
         this.router.navigateByUrl("/addresses");
+      } else if(err.status == 422) {
+        alert("Could not validate address");
       } else if(err.status == 500) {
         alert("Something went wrong");
         this.router.navigateByUrl("/addresses");

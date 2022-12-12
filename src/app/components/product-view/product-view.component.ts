@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 import { BackendServiceService, CartItem, Product } from 'src/app/services/backend-service.service';
 
 @Component({
@@ -22,7 +23,13 @@ export class ProductViewComponent implements OnInit {
     return this.quantityForm.get('quantity') as FormControl;
   }
 
-  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private route: ActivatedRoute, private router: Router) { }
+  constructor(
+    private backendService: BackendServiceService,
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
+    private auth: AuthService
+  ) { }
 
   ngOnInit(): void {
     this.id = Number(this.route.snapshot.paramMap.get('id'));
@@ -40,6 +47,15 @@ export class ProductViewComponent implements OnInit {
           })
         }
       }
+    }, err => {
+      if(err.status == 400 || err.status == 403 || err.status == 404) {
+        this.router.navigateByUrl("/products");
+      } else if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/products");
+      }
     });
   }
 
@@ -56,6 +72,15 @@ export class ProductViewComponent implements OnInit {
                 this.quantity.setValue(this.cartItem.quantity);
               }
             }
+          }, err => {
+            if(err.status == 400 || err.status == 409) {
+              alert("Invalid Input");
+            } else if(err.status == 401) {
+              this.auth.logout();
+            } else if(err.status == 500) {
+              alert("Something went wrong");
+              this.router.navigateByUrl("/");
+            }
           });
         }
       }
@@ -69,7 +94,23 @@ export class ProductViewComponent implements OnInit {
               this.quantity.setValue(this.cartItem.quantity);
             }
           }
+        }, err => {
+          if(err.status == 400 || err.status == 409) {
+            alert("Invalid Input");
+          } else if(err.status == 401) {
+            this.auth.logout();
+          } else if(err.status == 500) {
+            alert("Something went wrong");
+            this.router.navigateByUrl("/");
+          }
         });
+      } else if(err.status == 400 || err.status == 403) {
+        this.router.navigateByUrl("/products");
+      } else if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/products");
       }
     })
   }
@@ -88,6 +129,15 @@ export class ProductViewComponent implements OnInit {
                   this.quantity.setValue(this.cartItem.quantity);
                 }
               }
+            }, err => {
+              if(err.status == 400 || err.status == 409) {
+                alert("Invalid Input");
+              } else if(err.status == 401) {
+                this.auth.logout();
+              } else if(err.status == 500) {
+                alert("Something went wrong");
+                this.router.navigateByUrl("/");
+              }
             });
           } else {
             this.backendService.deleteCartItem(ci).subscribe(response =>{
@@ -97,9 +147,27 @@ export class ProductViewComponent implements OnInit {
                   this.quantity.setValue(0);
                 }
               }
+            }, err => {
+              if(err.status == 400 || err.status == 409) {
+                alert("Invalid Input");
+              } else if(err.status == 401) {
+                this.auth.logout();
+              } else if(err.status == 500) {
+                alert("Something went wrong");
+                this.router.navigateByUrl("/");
+              }
             })
           }
         }
+      }
+    }, err => {
+      if(err.status == 400 || err.status == 403 || err.status == 404) {
+        this.router.navigateByUrl("/products");
+      } else if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/products");
       }
     })
   }

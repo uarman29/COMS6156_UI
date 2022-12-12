@@ -44,10 +44,3 @@
     </div>
   </div>
 </form>
-
-<div *ngIf="address">
-  <h3>Links</h3>
-  <ul>
-      <li *ngFor="let link of address.links"><a routerLink="{{link.href}}">{{link.href}}</a></li>
-  </ul>
-</div>

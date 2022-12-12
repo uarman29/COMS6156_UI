@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 import { BackendServiceService, Order, OrderItem } from 'src/app/services/backend-service.service';
 
 @Component({
@@ -9,6 +12,9 @@ import { BackendServiceService, Order, OrderItem } from 'src/app/services/backen
   styleUrls: ['./order-view.component.css']
 })
 export class OrderViewComponent implements OnInit {
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  displayedColumns:string[] = ["product_id", "quantity"];
+  dataSource!:MatTableDataSource<OrderItem>;
 
   order!:Order;
   orderItems:OrderItem[] = [];
@@ -19,13 +25,6 @@ export class OrderViewComponent implements OnInit {
     address_id: [0],
     order_time: [''],
     total: [0],
-  });
-
-  orderItemForm = this.fb.group({
-    order_id: [0],
-    product_id: [0],
-    quantity: [0],
-    current_items: this.fb.array([])
   });
 
   get card_id() {
@@ -44,34 +43,30 @@ export class OrderViewComponent implements OnInit {
     return this.orderForm.get('total') as FormControl;
   }
 
-  get product_id() {
-    return this.orderItemForm.get('product_id') as FormControl;
-  }
-
-  get quantity() {
-    return this.orderItemForm.get('quantity') as FormControl;
-  }
-
-  get current_items() {
-    return this.orderItemForm.get('current_items') as FormArray;
-  }
-
-  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private route: ActivatedRoute, private router: Router) { }
+  constructor(
+    private backendService:BackendServiceService,
+    private fb:FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
+    private auth: AuthService
+  ) { }
 
   loadOrderItems() {
     this.backendService.getOrderItems(this.order.order_id).subscribe(response =>{
       if(response.status == 200) {
         if(response.body) {
-          this.current_items.clear();
           this.orderItems = response.body;
-          for(let item of this.orderItems) {
-            let itemForm = this.fb.group({
-              product_id: [item.product_id],
-              quantity: [item.quantity]
-            });
-            this.current_items.push(itemForm);
-          }
+          this.dataSource.data = this.orderItems;
         }
+      }
+    }, err => {
+      if(err.status == 400 || err.status == 403 || err.status == 404) {
+        this.router.navigateByUrl("/orders");
+      } else if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/orders");
       }
     });
   }
@@ -86,39 +81,40 @@ export class OrderViewComponent implements OnInit {
           this.address_id.setValue(this.order.address_id);
           this.order_time.setValue(this.order.order_time);
           this.total.setValue(this.order.total);
+          this.dataSource = new MatTableDataSource<OrderItem>(this.orderItems);
+          this.dataSource.paginator = this.paginator;
           this.loadOrderItems();
         }
       }
-      
+    }, err => {
+      if(err.status == 400 || err.status == 403 || err.status == 404) {
+        this.router.navigateByUrl("/orders");
+      } else if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/orders");
+      }
     });
   }
 
-  onUpdateSubmit() {
-    if(!this.orderForm.valid){
-      return;
-    }
-    let o:Order = {order_id: this.order.order_id, user_id: 1, card_id: this.card_id.value, address_id: this.address_id.value, order_time: this.order_time.value, total: this.total.value};
-    this.backendService.updateOrder(o).subscribe();
-    this.router.navigate(['/orders']);
-  }
-
   onDelete() {
-    this.backendService.deleteOrder(this.order.order_id).subscribe();
-    this.router.navigate(['/orders']);
+    this.backendService.deleteOrder(this.order.order_id).subscribe(response => {
+      if(response.status == 200){
+        this.router.navigate(['/orders']);
+      }
+    }, err => {
+      if(err.status == 400) {
+        alert("Invalid input");
+      } else if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 403 || err.status == 404) {
+        this.router.navigateByUrl("/orders");
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/orders");
+      }
+    });
   }
 
-  addOrderItem() {
-    let orderItem:OrderItem = {order_id: this.order.order_id, product_id: this.product_id.value, quantity: this.quantity.value};
-    this.backendService.addOrderItem(orderItem).subscribe(() => this.loadOrderItems());
-  }
-
-  updateOrderItem(i: number) {
-    let orderItem:OrderItem = {order_id: this.order.order_id, product_id: this.current_items.at(i).get('product_id')!.value, quantity: this.current_items.at(i).get('quantity')!.value};
-    this.backendService.updateOrderItem(orderItem).subscribe(() => this.loadOrderItems());
-  }
-
-  deleteOrderItem(i: number) {
-    let orderItem:OrderItem = {order_id: this.order.order_id, product_id: this.current_items.at(i).get('product_id')!.value, quantity: this.current_items.at(i).get('quantity')!.value};
-    this.backendService.deleteOrderItem(orderItem).subscribe(() => this.loadOrderItems());
-  }
 }

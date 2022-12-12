@@ -39,12 +39,14 @@ export class UserViewComponent implements OnInit {
         this.first_name.setValue(this.user.first_name);
         this.last_name.setValue(this.user.last_name);
       }
+    }, err => {
+      if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/");
+      }
     });
   }
 
   onUpdateSubmit() {
-  }
-
-  onDelete() {
   }
 }

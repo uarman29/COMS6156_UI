@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 import { BackendServiceService, Order } from 'src/app/services/backend-service.service';
 
 @Component({
@@ -17,8 +18,13 @@ export class OrdersViewComponent implements OnInit {
   dataSource!:MatTableDataSource<Order>;
 
 
-  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private router: Router, private ar:ActivatedRoute) { 
-  }
+  constructor(
+    private backendService:BackendServiceService,
+    private fb:FormBuilder,
+    private router: Router,
+    private ar:ActivatedRoute,
+    private auth:AuthService
+  ) { }
 
   updateData() {
     this.ar.queryParamMap.subscribe(params =>{
@@ -28,6 +34,13 @@ export class OrdersViewComponent implements OnInit {
             this.orders = response.body;
             this.dataSource.data = this.orders;
           }
+        }
+      }, err => {
+        if(err.status == 401) {
+          this.auth.logout();
+        } else if(err.status == 500) {
+          alert("Something went wrong");
+          this.router.navigateByUrl("/");
         }
       });
     });
@@ -46,6 +59,13 @@ export class OrdersViewComponent implements OnInit {
             this.dataSource = new MatTableDataSource<Order>(this.orders);
             this.dataSource.paginator = this.paginator;
           }
+        }
+      }, err => {
+        if(err.status == 401) {
+          this.auth.logout();
+        } else if(err.status == 500) {
+          alert("Something went wrong");
+          this.router.navigateByUrl("/");
         }
       });
     });

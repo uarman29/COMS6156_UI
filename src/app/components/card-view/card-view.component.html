@@ -38,10 +38,3 @@
     </div>
   </div>
 </form>
-
-<div *ngIf="card">
-  <h3>Links</h3>
-  <ul>
-      <li *ngFor="let link of card.links"><a routerLink="{{link.href}}">{{link.href}}</a></li>
-  </ul>
-</div>

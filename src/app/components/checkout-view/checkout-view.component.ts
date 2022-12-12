@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 import { Address, BackendServiceService, Card, CartItem, Order, OrderItem, Product, ProductMap } from 'src/app/services/backend-service.service';
 
 @Component({
@@ -31,7 +32,12 @@ export class CheckoutViewComponent implements OnInit {
     return this.checkoutForm.get('card_id') as FormControl;
   }
 
-  constructor(private fb:FormBuilder, private backendService:BackendServiceService, private router:Router) { }
+  constructor(
+    private fb: FormBuilder,
+    private backendService: BackendServiceService,
+    private router: Router,
+    private auth: AuthService
+  ) { }
 
   loadProducts() {
     this.backendService.getProducts().subscribe(response =>{
@@ -43,6 +49,13 @@ export class CheckoutViewComponent implements OnInit {
           });
           this.loadCartItems();
         }
+      }
+    }, err => {
+      if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/");
       }
     });
   }
@@ -56,6 +69,13 @@ export class CheckoutViewComponent implements OnInit {
             this.total += item.quantity * this.productMap[item.product_id].price;
           })
         }
+      }
+    }, err => {
+      if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/");
       }
     });
   }
@@ -72,6 +92,13 @@ export class CheckoutViewComponent implements OnInit {
           }
         }
       }
+    }, err => {
+      if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/");
+      }
     });
 
     this.backendService.getCards().subscribe(response =>{
@@ -83,6 +110,13 @@ export class CheckoutViewComponent implements OnInit {
             this.selectedCard = this.cards[0];
           }
         }
+      }
+    }, err => {
+      if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/");
       }
     });
   }
@@ -115,6 +149,17 @@ export class CheckoutViewComponent implements OnInit {
             }
             this.router.navigateByUrl('/orders');
           }
+        }
+      }, err => {
+        if(err.status == 400 || err.status == 409) {
+          alert("Invalid Input");
+        } else if(err.status == 401) {
+          this.auth.logout();
+        } else if(err.status == 422) {
+          alert("Could not validate address");
+        } else if(err.status == 500) {
+          alert("Something went wrong");
+          this.router.navigateByUrl("/");
         }
       })
     }

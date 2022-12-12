@@ -4,6 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-products-view',
@@ -13,8 +14,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class ProductsViewComponent implements OnInit {
   products: Product[] = [];
 
-  constructor(private backendService:BackendServiceService, private fb:FormBuilder, private router: Router, private ar:ActivatedRoute) { 
-  }
+  constructor(
+    private backendService:BackendServiceService,
+    private fb:FormBuilder,
+    private router: Router,
+    private ar:ActivatedRoute,
+    private auth:AuthService
+  ) { }
 
   updateData() {
     this.ar.queryParamMap.subscribe(params =>{
@@ -25,6 +31,13 @@ export class ProductsViewComponent implements OnInit {
           }
         }
       });
+    }, err => {
+      if(err.status == 401) {
+        this.auth.logout();
+      } else if(err.status == 500) {
+        alert("Something went wrong");
+        this.router.navigateByUrl("/");
+      }
     });
   }
   
