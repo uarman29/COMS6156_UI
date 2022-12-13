@@ -12,20 +12,22 @@ import { OrdersViewComponent } from './components/orders-view/orders-view.compon
 import { ProductViewComponent } from './components/product-view/product-view.component';
 import { ProductsViewComponent } from './components/products-view/products-view.component';
 import { UserViewComponent } from './components/user-view/user-view.component';
+import { LoggedInGuard } from './guards/logged-in.guard';
+import { LoggedOutGuard } from './guards/logged-out.guard';
 
 const routes: Routes = [
-  { path: 'products/:id', component: ProductViewComponent },
-  { path: 'products', component: ProductsViewComponent },
-  { path: 'user', component: UserViewComponent },
-  { path: 'cards/:id', component: CardViewComponent },
-  { path: 'cards', component: CardsViewComponent },
-  { path: 'addresses/:id', component: AddressViewComponent },
-  { path: 'addresses', component: AddressesViewComponent },
-  { path: 'orders/:id', component: OrderViewComponent },
-  { path: 'orders', component: OrdersViewComponent },
-  { path: 'login', component: LoginViewComponent },
-  { path: 'cart', component: CartViewComponent },
-  { path: 'checkout', component: CheckoutViewComponent }
+  { path: 'products/:id', component: ProductViewComponent, canActivate: [LoggedInGuard] },
+  { path: 'products', component: ProductsViewComponent, canActivate: [LoggedInGuard] },
+  { path: 'user', component: UserViewComponent, canActivate: [LoggedInGuard] },
+  { path: 'cards/:id', component: CardViewComponent, canActivate: [LoggedInGuard] },
+  { path: 'cards', component: CardsViewComponent, canActivate: [LoggedInGuard] },
+  { path: 'addresses/:id', component: AddressViewComponent, canActivate: [LoggedInGuard] },
+  { path: 'addresses', component: AddressesViewComponent, canActivate: [LoggedInGuard] },
+  { path: 'orders/:id', component: OrderViewComponent, canActivate: [LoggedInGuard] },
+  { path: 'orders', component: OrdersViewComponent, canActivate: [LoggedInGuard] },
+  { path: 'login', component: LoginViewComponent, canActivate: [LoggedOutGuard] },
+  { path: 'cart', component: CartViewComponent, canActivate: [LoggedInGuard] },
+  { path: 'checkout', component: CheckoutViewComponent, canActivate: [LoggedInGuard] }
 ];
 
 @NgModule({

@@ -1,11 +1,16 @@
 <form [formGroup] = "userForm">
     <div class="row user-form-group mb-3">
-        <div class="col-md-6 user-form-control">
+        <div class="col-md-4 user-form-control">
+            <label for="email" class="form-label">Email</label>
+            <input type="text" class="form-control" formControlName = "email" required [attr.disabled]=true>
+        </div>
+
+        <div class="col-md-4 user-form-control">
             <label for="first_name" class="form-label">First Name</label>
             <input type="text" class="form-control" formControlName = "first_name" required>
         </div>
 
-        <div class="col-md-6 user-form-control">
+        <div class="col-md-4 user-form-control">
             <label for="last_name" class="form-label">Last Name</label>
             <input type="text" class="form-control" formControlName = "last_name" required>
         </div>
@@ -14,3 +19,10 @@
       <button class="btn btn-secondary m-1" [disabled]="!userForm.valid" (click)="onUpdateSubmit()">Update</button>
     </div>
 </form>
+
+<div *ngIf="user">
+    <h3>Links</h3>
+    <ul>
+        <li *ngFor="let link of user.links"><a routerLink="{{link.href}}">{{link.href}}</a></li>
+    </ul>
+  </div>

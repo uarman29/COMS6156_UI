@@ -138,17 +138,9 @@ export class CheckoutViewComponent implements OnInit {
   placeOrder() {
     if(this.cartItems.length > 0) {
       let o:Order = {order_id: 1, card_id: this.card_id.value, address_id: this.address_id.value, total: this.total, order_time: new Date().toISOString().slice(0, 19).replace('T', ' ')};
-      this.backendService.addOrder(o).subscribe( async response =>{
+      this.backendService.placeOrder(o).subscribe( async response =>{
         if(response.status == 200) {
-          if(response.body){
-            o = response.body;
-            for await(const element of this.cartItems){
-              let oi:OrderItem = {order_id: o.order_id, product_id: element.product_id, quantity: element.quantity};
-              this.backendService.addOrderItem(oi).subscribe();
-              this.backendService.deleteCartItem(element).subscribe();
-            }
-            this.router.navigateByUrl('/orders');
-          }
+          this.router.navigateByUrl('/orders');
         }
       }, err => {
         if(err.status == 400 || err.status == 409) {

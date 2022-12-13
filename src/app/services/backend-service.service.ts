@@ -1,6 +1,7 @@
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ParamMap } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AuthService } from './auth.service';
@@ -25,6 +26,7 @@ export interface Product {
 
 export interface User {
 	user_id: number,
+	email: string,
 	first_name: string,
 	last_name: string,
 	links?: Link[]
@@ -94,9 +96,19 @@ export class BackendServiceService {
 		window.location.href = this.composite_microservice_url + "/logout";
 	}
 
-	getProducts(params:Object = {}): Observable<HttpResponse<Product[]>> {
+	getProducts(params_object?:ParamMap): Observable<HttpResponse<Product[]>> {
+		let params = new HttpParams()
+		if(params_object) {
+			params_object.keys.forEach(key =>{
+				let val:string|null = params_object.get(key);
+				if(val !== null)
+					params = params.append(key, val)
+			})
+		}
+
 		let options = {
 			observe: 'response' as const,
+			params: params,
 			headers: new HttpHeaders()
 				.set("Authorization", this.auth.getAPIKey())
 		};
@@ -120,13 +132,19 @@ export class BackendServiceService {
 		};
 		return this.http.get<User>(this.composite_microservice_url + `/user`, options);
 	}
+
+	updateUser(user: User): Observable<HttpResponse<User>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.put<User>(this.composite_microservice_url + `/user`, user, options);
+	}
+
 	/*
 	addUser(user: User): Observable<User> {
 		return this.http.post<User>(this.user_microservice_url + "/users", user);
-	}
-
-	updateUser(user: User): Observable<User> {
-		return this.http.put<User>(this.user_microservice_url + `/users/${user.user_id}`, user);
 	}
 
 	deleteUser(user_id: number): Observable<User> {
@@ -134,9 +152,19 @@ export class BackendServiceService {
 	}
 	*/
 
-	getCards(params:Object = {}): Observable<HttpResponse<Card[]>> {
+	getCards(params_object?:ParamMap): Observable<HttpResponse<Card[]>> {
+		let params = new HttpParams()
+		if(params_object) {
+			params_object.keys.forEach(key =>{
+				let val:string|null = params_object.get(key);
+				if(val !== null)
+					params = params.append(key, val)
+			})
+		}
+
 		let options = {
 			observe: 'response' as const,
+			params: params,
 			headers: new HttpHeaders()
 				.set("Authorization", this.auth.getAPIKey())
 		};
@@ -179,9 +207,19 @@ export class BackendServiceService {
 		return this.http.delete<Card>(this.composite_microservice_url + `/cards/${card_id}`, options);
 	}
 
-	getAddresses(params:Object = {}): Observable<HttpResponse<Address[]>> {
+	getAddresses(params_object?:ParamMap): Observable<HttpResponse<Address[]>> {
+		let params = new HttpParams()
+		if(params_object) {
+			params_object.keys.forEach(key =>{
+				let val:string|null = params_object.get(key);
+				if(val !== null)
+					params = params.append(key, val)
+			})
+		}
+
 		let options = {
 			observe: 'response' as const,
+			params: params,
 			headers: new HttpHeaders()
 				.set("Authorization", this.auth.getAPIKey())
 		};
@@ -224,9 +262,19 @@ export class BackendServiceService {
 		return this.http.delete<Address>(this.composite_microservice_url + `/addresses/${address_id}`, options);
 	}
 
-	getOrders(params:Object = {}): Observable<HttpResponse<Order[]>> {
+	getOrders(params_object?:ParamMap): Observable<HttpResponse<Order[]>> {
+		let params = new HttpParams()
+		if(params_object) {
+			params_object.keys.forEach(key =>{
+				let val:string|null = params_object.get(key);
+				if(val !== null)
+					params = params.append(key, val)
+			})
+		}
+
 		let options = {
 			observe: 'response' as const,
+			params: params,
 			headers: new HttpHeaders()
 				.set("Authorization", this.auth.getAPIKey())
 		};
@@ -251,6 +299,15 @@ export class BackendServiceService {
 		return this.http.post<Order>(this.composite_microservice_url + "/orders", order, options);
 	}
 
+	placeOrder(order: Order): Observable<HttpResponse<Order>> {
+		let options = {
+			observe: 'response' as const,
+			headers: new HttpHeaders()
+				.set("Authorization", this.auth.getAPIKey())
+		};
+		return this.http.post<Order>(this.composite_microservice_url + "/placeorder", order, options);
+	}
+
 	updateOrder(order: Order): Observable<HttpResponse<Order>> {
 		let options = {
 			observe: 'response' as const,
@@ -269,9 +326,19 @@ export class BackendServiceService {
 		return this.http.delete<Order>(this.composite_microservice_url + `/orders/${order_id}`, options);
 	}
 
-	getOrderItems(order_id: number): Observable<HttpResponse<OrderItem[]>> {
+	getOrderItems(order_id: number, params_object?: ParamMap): Observable<HttpResponse<OrderItem[]>> {
+		let params = new HttpParams()
+		if(params_object) {
+			params_object.keys.forEach(key =>{
+				let val:string|null = params_object.get(key);
+				if(val !== null)
+					params = params.append(key, val)
+			})
+		}
+
 		let options = {
 			observe: 'response' as const,
+			params: params,
 			headers: new HttpHeaders()
 				.set("Authorization", this.auth.getAPIKey())
 		};
@@ -314,9 +381,19 @@ export class BackendServiceService {
 		return this.http.get<CartItem>(this.composite_microservice_url + `/cart/items/${product_id}`, options);
 	}
 
-	getCartItems(): Observable<HttpResponse<CartItem[]>> {
+	getCartItems(params_object?:ParamMap): Observable<HttpResponse<CartItem[]>> {
+		let params = new HttpParams()
+		if(params_object) {
+			params_object.keys.forEach(key =>{
+				let val:string|null = params_object.get(key);
+				if(val !== null)
+					params = params.append(key, val)
+			})
+		}
+
 		let options = {
 			observe: 'response' as const,
+			params: params,
 			headers: new HttpHeaders()
 				.set("Authorization", this.auth.getAPIKey())
 		};

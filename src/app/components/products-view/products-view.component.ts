@@ -30,14 +30,14 @@ export class ProductsViewComponent implements OnInit {
             this.products = response.body;
           }
         }
+      }, err => {
+        if(err.status == 401) {
+          this.auth.logout();
+        } else if(err.status == 500) {
+          alert("Something went wrong");
+          this.router.navigateByUrl("/");
+        }
       });
-    }, err => {
-      if(err.status == 401) {
-        this.auth.logout();
-      } else if(err.status == 500) {
-        alert("Something went wrong");
-        this.router.navigateByUrl("/");
-      }
     });
   }
   

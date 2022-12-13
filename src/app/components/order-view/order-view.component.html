@@ -2,22 +2,22 @@
     <div class="row order-form-group mb-3">
         <div class="col-md-2 order-form-control">
             <label for="card_id" class="form-label">Card Id</label>
-            <input type="text" class="form-control" formControlName = "card_id" step="1" min="1" required [readonly]="true">
+            <input type="text" class="form-control" formControlName = "card_id" step="1" min="1" required [attr.disabled]=true>
         </div>
 
         <div class="col-md-2 order-form-control">
             <label for="address_id" class="form-label">Address Id</label>
-            <input type="text" class="form-control" formControlName = "address_id" step="1" min="1" required>
+            <input type="text" class="form-control" formControlName = "address_id" step="1" min="1" required [attr.disabled]=true>
         </div>
 
         <div class="col-md-4 order-form-control">
             <label for="order_time" class="form-label">Order Time</label>
-            <input type="text" class="form-control" formControlName = "order_time" required>
+            <input type="text" class="form-control" formControlName = "order_time" required [attr.disabled]=true>
         </div>
 
         <div class="col-md-2 order-form-control">
             <label for="total" class="form-label">Total</label>
-            <input type="number" class="form-control" formControlName = "total" min="0" required>
+            <input type="number" class="form-control" formControlName = "total" min="0" required [attr.disabled]=true>
         </div>
     </div>
     <div class="d-flex flex-row justify-content-center">
@@ -69,4 +69,11 @@
                       aria-label="Select page of orderItems">
       </mat-paginator>
   </div>
+</div>
+
+<div *ngIf="order">
+  <h3>Links</h3>
+  <ul>
+      <li *ngFor="let link of order.links"><a routerLink="{{link.href}}">{{link.href}}</a></li>
+  </ul>
 </div>

@@ -19,3 +19,10 @@
         </ng-template>
     </div>
 </div>
+
+<div *ngIf="product">
+    <h3>Links</h3>
+    <ul>
+        <li *ngFor="let link of product.links"><a routerLink="{{link.href}}">{{link.href}}</a></li>
+    </ul>
+  </div>

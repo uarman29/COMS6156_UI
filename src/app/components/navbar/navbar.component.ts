@@ -15,8 +15,7 @@ export class NavbarComponent implements OnInit {
   }
 
   async logout() {
-    await this.auth.logout();
-    this.backendService.logout();
+    this.auth.logout();
   }
 
 }
