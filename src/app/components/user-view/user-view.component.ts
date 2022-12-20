@@ -16,20 +16,15 @@ export class UserViewComponent implements OnInit {
 
   userForm = this.fb.group({
     email: [''],
-    first_name: [''],
-    last_name: ['']
+    name: [''],
   });
 
   get email() {
     return this.userForm.get('email') as FormControl;
   }
 
-  get first_name() {
-    return this.userForm.get('first_name') as FormControl;
-  }
-
-  get last_name() {
-    return this.userForm.get('last_name') as FormControl;
+  get name() {
+    return this.userForm.get('name') as FormControl;
   }
 
   constructor(
@@ -49,8 +44,7 @@ export class UserViewComponent implements OnInit {
           this.router.navigate(['/']);
         }
         this.email.setValue(this.user.email);
-        this.first_name.setValue(this.user.first_name);
-        this.last_name.setValue(this.user.last_name);
+        this.name.setValue(this.user.name);
       }
     }, err => {
       if(err.status == 500) {
@@ -64,7 +58,7 @@ export class UserViewComponent implements OnInit {
     if(!this.userForm.valid){
       return;
     }
-    let u:User = {user_id: this.user.user_id, email: this.user.email, first_name: this.first_name.value, last_name: this.last_name.value};
+    let u:User = {user_id: this.user.user_id, email: this.user.email, name: this.name.value};
     this.backendService.updateUser(u).subscribe(response => {
       if(response.status == 200){
         alert("User info updated");

@@ -1,18 +1,13 @@
 <form [formGroup] = "userForm">
     <div class="row user-form-group mb-3">
-        <div class="col-md-4 user-form-control">
+        <div class="col-md-6 user-form-control">
             <label for="email" class="form-label">Email</label>
-            <input type="text" class="form-control" formControlName = "email" required [attr.disabled]=true>
+            <input type="text" class="form-control" formControlName = "email" required>
         </div>
 
-        <div class="col-md-4 user-form-control">
-            <label for="first_name" class="form-label">First Name</label>
-            <input type="text" class="form-control" formControlName = "first_name" required>
-        </div>
-
-        <div class="col-md-4 user-form-control">
-            <label for="last_name" class="form-label">Last Name</label>
-            <input type="text" class="form-control" formControlName = "last_name" required>
+        <div class="col-md-6 user-form-control">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" formControlName = "name" required>
         </div>
     </div>
     <div class="d-flex flex-row justify-content-center">

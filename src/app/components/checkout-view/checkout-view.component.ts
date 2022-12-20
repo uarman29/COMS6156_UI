@@ -11,6 +11,7 @@ import { Address, BackendServiceService, Card, CartItem, Order, OrderItem, Produ
 })
 export class CheckoutViewComponent implements OnInit {
 
+  ordering = false;
   productMap:ProductMap = {};
   cartItems:CartItem[] = [];
   addresses:Address[] = [];
@@ -136,13 +137,23 @@ export class CheckoutViewComponent implements OnInit {
   }
 
   placeOrder() {
-    if(this.cartItems.length > 0) {
+    if(this.cartItems.length > 0 && !this.ordering) {
+      console.log("INSIDE PLACE ORDER")
+      console.log(this.ordering)
+      this.ordering = true;
       let o:Order = {order_id: 1, card_id: this.card_id.value, address_id: this.address_id.value, total: this.total, order_time: new Date().toISOString().slice(0, 19).replace('T', ' ')};
-      this.backendService.placeOrder(o).subscribe( async response =>{
+      this.backendService.placeOrder(o).subscribe(response =>{
+        this.ordering = false;
+        console.log(response.status)
+        console.log("INSIDE RESPONSE")
+        console.log(response)
         if(response.status == 200) {
           this.router.navigateByUrl('/orders');
         }
       }, err => {
+        console.log("INSIDE ERR")
+        console.log(err)
+        this.ordering = false;
         if(err.status == 400 || err.status == 409) {
           alert("Invalid Input");
         } else if(err.status == 401) {
